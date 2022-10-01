@@ -6,31 +6,34 @@
           <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
+          <form action="/employees/systems/register/" method="POST">
+            {% csrf_token %}
             <div class="mb-3">
               <label class="form-label fw-bold">اسم المستخدم</label>
-              <input type="text" class="form-control" placeholder="محمد علي">
+              <input type="text" class="form-control" placeholder="اسم المستخدم" name="username">
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">كلمة المرور</label>
-              <input type="password" class="form-control" placeholder="******">
+              <input type="password" class="form-control" placeholder="كلمة المرور" name="password">
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">البريد الالكتروني</label>
-              <input type="email" class="form-control" placeholder="mohammed.ali@outlook.com">
+              <input type="email" class="form-control" placeholder="البريد الالكتروني" name="email">
             </div>
             <div class="mb-3">
               <label class="form-label fw-bold">نوع الحساب</label>
-              <select class="form-select" aria-label="Default select example">
+              <select class="form-select" aria-label="Default select example" name="role">
                 <option value="ادمن">ادمن</option>
                 <option value="محرر">محرر</option>
                 <option value="مستخدم">مستخدم</option>
               </select>
             </div>
+            <div class="row modal-footer mt-2 d-flex justify-content-start align-items-center">
+              <div class="col-md-3 mt-2 p-0">
+                <input type="submit" class="btn btn-primary" value="تسجيل">
+              </div>
+            </div>
           </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary">حفظ</button>
         </div>
       </div>
     </div>

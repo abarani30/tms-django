@@ -16,6 +16,27 @@
 
   <!--Employees Page-->
   <main class="mt-4 px-3" style="margin-top: 80px !important">
+
+    <center>
+      <div class="col-md-3">
+        {% for message in messages %}
+          {% if message and message.tags == "error" %}
+          <div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between p-2" id="alert_form"
+            role="alert">
+            <button type="button" style="margin-top: 5px;" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            <label style="font-size: 16px;">{{message}}</label>
+          </div>
+          {% else %}
+          <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between p-2" id="alert_form"
+            role="alert">
+            <button type="button" style="margin-top: 5px;" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{message}}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </center>
+
     <div class="row px-1">
       <div class="col-md-3">
         <label class="fs-6 fw-bold px-1">ابحث:</label>
@@ -51,30 +72,15 @@
                 <td>{{employee.username}}</td>
                 <td>{{employee.email}}</td>
                 <td>
-                  {% if user.is_staff %}
-                  <select disabled="true" class="table-division">
-                    <option value="الانظمة" selected="true">{{employee.profile.division}}</option>
-                    <option value="الفنية">الفنية</option>
-                    <option value="الذاتية">الذاتية</option>
-                    <option value="ادخال البيانات">ادخال البيانات</option>
-                  </select>
-                  {% else %}
-                  الانظمة
-                  {% endif %}
+                  {{employee.profile.division}}
                 </td>
                 <td>
                   {% if user.is_staff %}
-                  <select disabled="true" class="table-account">
                     {% if employee.is_staff %}
-                    <option value="ادمن" selected="true">ادمن</option>
-                    <option value="محرر">محرر</option>
-                    <option value="مستخدم">مستخدم</option>
+                    ادمن
                     {% else %}
-                    <option value="ادمن">ادمن</option>
-                    <option value="محرر">محرر</option>
-                    <option value="مستخدم" selected="true">مستخدم</option>
+                    مستخدم
                     {% endif %}
-                  </select>
                   {% else %}
                     {{employee.profile.account}}
                   {% endif %}

@@ -191,7 +191,7 @@
                 <td class="fw-bold text-danger">{{task.status}}</td>
                 {% endif %}
                 {% if task.status == "بأنتظار الموافقة" %}
-                <td class="fw-bold text-success">{{task.status}}</td>
+                <td class="fw-bold text-primary">{{task.status}}</td>
                 {% endif %}
                 {% if task.status != "منجزة" %}
                 <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
@@ -244,7 +244,7 @@
                   <td class="fw-bold text-danger">{{task.status}}</td>
                   {% endif %}
                   {% if task.status == "بأنتظار الموافقة" %}
-                  <td class="fw-bold text-success">{{task.status}}</td>
+                  <td class="fw-bold text-primary">{{task.status}}</td>
                   {% endif %}
                   <td>
                     {% if not task.received %}

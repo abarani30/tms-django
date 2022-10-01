@@ -9,8 +9,10 @@ import datetime, uuid
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse
+from django.contrib.auth.decorators import user_passes_test
 
 # get request
+@user_passes_test(lambda user: user.is_superuser or user.profile.division == "الانظمة")
 def get_all(request) -> SimpleTemplateResponse:
   if get_all_tasks() != []:
     return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks()))
@@ -44,7 +46,7 @@ def create_task(request) -> HttpResponseRedirect:
     return HttpResponseRedirect("/tasks/systems/")
   
   if not validate_data(request):
-    messages.error(request, "ﻻ ﻳﻤﻜﻦ ﺗﻨﻔﻴﺬ ﻫﺬا اﻟﻄﻠﺐ")
+    messages.error(request, "البيانات التي ارسلتها غير صحيحه")
   else: 
     assign_task(request, add_task(request))
     send_email(request)
@@ -217,7 +219,7 @@ def is_not_empty(request) -> bool:
 
 # compare both the start_date and end_date
 def compare_dates(request) -> bool:
-  return request.POST.get("start-date") < request.POST.get("end-date")
+  return request.POST.get("start-date") <= request.POST.get("end-date")
 
 
 
