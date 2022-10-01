@@ -11,8 +11,15 @@ from django.http import HttpResponseRedirect
 from django.template.response import SimpleTemplateResponse
 from django.contrib.auth.decorators import user_passes_test
 
+
+# to check the user division
+def check_division(user):
+  return bool(user.is_superuser or user.profile.division == "الانظمة")
+
+
+
 # get request
-@user_passes_test(lambda user: user.is_superuser or user.profile.division == "الانظمة")
+@user_passes_test(lambda user: check_division(user))
 def get_all(request) -> SimpleTemplateResponse:
   if get_all_tasks() != []:
     return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks()))
@@ -41,6 +48,7 @@ def default_context():
 
 
 # create new task
+@user_passes_test(lambda user: check_division(user))
 def create_task(request) -> HttpResponseRedirect:
   if request.method != "POST":
     return HttpResponseRedirect("/tasks/systems/")
@@ -57,6 +65,7 @@ def create_task(request) -> HttpResponseRedirect:
 
 
 # receive the task 
+@user_passes_test(lambda user: check_division(user))
 def receive_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and not request.user.is_staff:
     update_received_field(get_task(id)[0])
@@ -66,6 +75,7 @@ def receive_task(request, id) -> HttpResponseRedirect:
   
 
 # achieve the task (task completion) 
+@user_passes_test(lambda user: check_division(user))
 def achieve_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and not request.user.is_staff:
     update_status_field(request, get_task(id)[0])
@@ -75,6 +85,7 @@ def achieve_task(request, id) -> HttpResponseRedirect:
 
 
 # confirm the task 
+@user_passes_test(lambda user: check_division(user))
 def confirm_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and request.user.is_staff:
     update_status_field(request, get_task(id)[0])
@@ -84,6 +95,7 @@ def confirm_task(request, id) -> HttpResponseRedirect:
 
 
 # delete the task 
+@user_passes_test(lambda user: check_division(user))
 def delete_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and request.user.is_staff:
     decactivate_task(get_task(id)[0])
@@ -93,6 +105,7 @@ def delete_task(request, id) -> HttpResponseRedirect:
 
 
 # assign a rate to the task 
+@user_passes_test(lambda user: check_division(user))
 def rate_task(request, id) -> HttpResponseRedirect:
   if request.method == "POST" and id and get_task(id) and request.user.is_staff:
     rate(get_task(id)[0], request.POST.get("task-rate"))

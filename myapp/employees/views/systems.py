@@ -7,7 +7,21 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 
+
+# check the user division
+def check_division(user):
+  return bool(user.is_superuser or user.profile.division == "الانظمة")
+
+
+
+# check if the user is admin 
+def is_admin(user):
+  return bool(user.is_staff)
+
+
+
 # a view to handle the get request
+@user_passes_test(lambda user: check_division(user))
 def get_all_employees(request) -> SimpleTemplateResponse:
   if is_task():
     return render(request, "systems_employees.html", 
@@ -17,7 +31,8 @@ def get_all_employees(request) -> SimpleTemplateResponse:
 
 
 # a view to handle the post request (register a new user)
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: is_admin(user))
+@user_passes_test(lambda user: check_division(user))
 def register_user(request) -> HttpResponseRedirect:
   if request.method != "POST":
     return HttpResponseRedirect("/employees/systems/")
@@ -26,9 +41,8 @@ def register_user(request) -> HttpResponseRedirect:
   else: 
     update_profile(request, assign_role(request, add_user(request)))
     messages.success(request, "تم انشاء الحساب بنجاح")
-  
-
   return HttpResponseRedirect("/employees/systems/")
+
 
 
 # get the context dictionary
