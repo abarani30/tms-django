@@ -42,7 +42,7 @@
         <label class="fs-6 fw-bold px-1">ابحث:</label>
         <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن اسم">
       </div>
-      {% if user.is_staff and not user.is_superuser %}
+      {% if user.is_staff %}
       <div class="col-md-2 py-4">
         <button class="btn btn-primary createTaskBtn" data-bs-toggle="modal" href="#user-modal">انشاء حساب</button>
       </div>
@@ -101,7 +101,7 @@
     </div>
 
     <!--User Modal-->
-    {% if user.is_staff and not user.is_superuser %}
+    {% if user.is_staff %}
       {% include "components/user_modal.html" %}
     {% endif %}
     <!---->
