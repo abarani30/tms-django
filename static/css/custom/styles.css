@@ -1,0 +1,201 @@
+:root {
+  --offcanvas-width: 270px;
+  --topNavbarHeight: 54px;
+  --mainColor: #3498DB;
+  --primaryHoverColor: #2d7eb4;
+  --secondaryColor: white;
+  --hideOverflowX: hidden;
+  --primaryFont: Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--primaryFont);
+  overflow-x: var(--hideOverflowX);
+  overflow-y: scroll;
+}
+
+.navbar,
+.row {
+  direction: rtl !important;
+  font-size: 17px;
+}
+
+.navbar {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.navbar-nav {
+  gap: 15px !important;
+}
+
+.active {
+  font-weight: bold !important;
+}
+
+.dropdown-menu {
+  text-align: right;
+}
+
+.dropdown-menu>li {
+  padding: 2px 0px !important;
+}
+
+.badge {
+  font-size: 11.4px !important;
+}
+
+.table td,
+.table th {
+  min-width: 120px !important;
+}
+
+.tasks-table thead tr th:nth-child(1) {
+  width: 350px !important;
+}
+
+.tasks-table thead tr th:nth-child(3) {
+  width: 180px !important;
+}
+
+.fa-print,
+.fa-file-excel {
+  color: #444;
+  font-size: 15px;
+}
+
+.excelBtn,
+.printBtn {
+  background: #fff !important;
+  border: 1.2px solid #ccc;
+  border-radius: 3px;
+  padding: 3px 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.excelBtn {
+  margin-right: 10px;
+}
+
+#myInput {
+  width: 100%;
+  font-size: 15px;
+  padding: 7px;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
+  border-radius: 3px;
+}
+
+select option {
+  text-align: right !important;
+}
+
+.filterBtn {
+  width: 5rem;
+}
+
+.createTaskBtn {
+  width: 6rem;
+}
+
+.modal {
+  direction: rtl;
+}
+
+.btn-close {
+  position: absolute;
+  left: 5px;
+}
+
+textarea {
+  resize: none;
+}
+
+.input-group-text {
+  padding: 0 !important;
+  margin-top: 10px !important;
+  cursor: pointer;
+  margin-right: -25px;
+  z-index: -1 !important;
+}
+
+.fa-calendar {
+  z-index: 9999 !important;
+  color: #767676;
+}
+
+.fa-calendar:hover {
+  color: black;
+}
+
+#notifications-table thead th {
+  border: none !important;
+  padding-bottom: 20px !important;
+}
+
+#notifications-table tbody tr td {
+  border-bottom: none !important;
+}
+
+.list-group-item {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center !important;
+  border-radius: 5px !important;
+}
+
+.table-account,
+.table-division,
+.task-rate,
+.admins-select {
+  border: none;
+}
+
+.task-employees option {
+  color: #767676;
+  padding-top: 3px !important;
+}
+
+.task-employees option:checked {
+  color: black !important;
+  font-weight: bold;
+  background: rgb(221, 221, 221) !important;
+}
+
+
+@media (min-width: 300px) and (max-width: 599px) {
+  .navbar-brand {
+    margin-right: 0px !important;
+  }
+
+  .navbar-nav {
+    gap: 5px !important;
+  }
+
+  .navbar-collapse {
+    background: #eee !important;
+    margin-top: 10px;
+  }
+
+  .dropdown-menu>li {
+    padding: 5px 0px !important;
+  }
+
+  .filterBtn,
+  .createTaskBtn {
+    width: 100% !important;
+  }
+
+  .list-group-item {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: start !important;
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+}

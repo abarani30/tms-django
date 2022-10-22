@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.min.css'  %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" />
+  </link>
+  <link rel="stylesheet" href="{% static '/css/custom/styles.css' %}" />
+  <title>الصفحة الرئيسية</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand p-0 d-flex justify-content-center align-items-center gap-2" href="/">
+        <img src="https://www.svgrepo.com/show/315133/stack.svg" alt="Logo" width="30" height="35"
+          class="d-inline-block align-text-top">
+        نظام ادارة المهام
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">الرئيسية</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#employees" id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              الموظفين
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+              <li><a class="dropdown-item" href="maintenance_employees.html">الفنية</a></li>
+              <li><a class="dropdown-item" href="#">الادارية</a></li>
+              <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#tasks" id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              المهام
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="director_tasks.html">المدير</a></li>
+              <li><a class="dropdown-item" href="/tasks/systems/">الانظمة</a></li>
+              <li><a class="dropdown-item" href="#">الفنية</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">التقارير</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">السجل</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="notifications.html">
+              الاشعارات
+              <span class="badge bg-danger">3</span>
+            </a>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              اهلاً, <b>علي ستار</b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
+              <li><a class="dropdown-item" href="#">الاعدادات</a></li>
+              <li><a class="dropdown-item" href="#">تسجيل الخروج</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!--Home Page-->
+  <main class="px-2" style="margin-top: 80px !important">
+
+    <div class="container-fluid">
+      <div class="row px-1">
+        <div class="col-md-12">
+          <ul class="px-4 statistics">
+            <li class="pt-1">
+              الموظف
+              <a href="#"><b>علي ستار</b></a>
+              حصل على اعلى معدل بألشهر الحالي
+              والذي هو
+              <b>(900)</b>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row px-1">
+        <div class="col-md-12">
+          <u class="fw-bold">الاحصائيات:</u>
+          <ul class="px-4 statistics">
+            <li class="pt-1">عدد المهام: <b>30</b></li>
+            <li class="pt-1">مهام منجزة: <b>25</b></li>
+            <li class="pt-1">مهام غير منجزة: <b>5</b></li>
+            <li class="pt-1">عدد الموظفين: <b>25</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+      <div class="row px-1">
+        <u class="fw-bold">مخطط المهام:</u>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header fw-bold">شعبة الانظمة</div>
+            <div class="card-body">
+              <canvas class="chart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header fw-bold">الشعبة الفنية</div>
+            <div class="card-body">
+              <canvas class="chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mt-4">
+      <div class="row px-1">
+        <div class="col-md-12">
+          <u class="fw-bold">احدث المهام:</u>
+          <ul class="px-4 statistics">
+            <li class="pt-1">
+              قام
+              <b>امير حاتم</b>
+              بتخصيص مهمه
+              الى
+              <b>علي ستار</b>
+              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
+                title="تصميم موقع لقسم الحاسبة">
+                (معرفة المزيد)
+              </button>
+            </li>
+            <li class="pt-1">
+              قام
+              <b>بكر هادي</b>
+              بتخصيص مهمه
+              الى
+              <b>انور اكرم</b>
+              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
+                title="ربط كيبل بألقسم الفني - شعبة المعامل الميكانيكية">
+                (معرفة المزيد)
+              </button>
+            </li>
+            <li class="pt-1">
+              قام
+              <b>بكر هادي</b>
+              بتخصيص مهمه
+              الى
+              <b>علا شامل, مروه محمد</b>
+              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
+                title="انشاء بريد الكتروني لكل موظفي قسم الحاسبة الالكترونية لغرض نظام ادارة المهام">
+                (معرفة المزيد)
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mt-2">
+      <div class="row px-1">
+        <div class="col-md-12">
+          <p>
+            <u class="fw-bold">السجل:</u>
+            <a href="#">(الكل)</a>
+          </p>
+          <ul class="px-4 statistics">
+            <li class="pt-1">
+              قام
+              <b>امير حاتم</b>
+              بأنشاء حساب للموظف
+              <b>صفا فوزي</b>
+            </li>
+            <li class="pt-1">
+              قام
+              <b>امير حاتم</b>
+              بتحديث بيانات حسابه
+            </li>
+            <li class="pt-1">
+              قام
+              <b>بكر هادي</b>
+              بأنشاء حساب للموظف
+              <b>محمد قاسم</b>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <!---->
+
+
+
+  <script src="{% static '/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="{% static '/js/chart/chart.js' %}"></script>
+  <script src="{% static '/js/header/navbar.js' %}"></script>
+
+</body>
+
+</html>

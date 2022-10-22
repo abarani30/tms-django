@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+  {% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width
+=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static '/css/bootstrap/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="{% static '/css/custom/styles.css' %}" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <title>مهام شعبة الانظمة</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex justify-content-center align-items-center gap-2 me-0" href="/">
+        <img src="https://www.svgrepo.com/show/315133/stack.svg" alt="Logo" width="30" height="35"
+          class="d-inline-block align-text-top">
+        نظام ادارة المهام
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">الرئيسية</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#employees" id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              الموظفين
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="systems_employees.html">الانظمة</a></li>
+              <li><a class="dropdown-item" href="maintenance_employees.html">الفنية</a></li>
+              <li><a class="dropdown-item" href="#">الادارية</a></li>
+              <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#tasks" id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              المهام
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="director_tasks.html">المدير</a></li>
+              <li><a class="dropdown-item" href="/tasks/systems/">الانظمة</a></li>
+              <li><a class="dropdown-item" href="#">الفنية</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">التقارير</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">السجل</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="notifications.html">
+              الاشعارات
+              <span class="badge bg-danger">3</span>
+            </a>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              اهلاً, <b>علي ستار</b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
+              <li><a class="dropdown-item" href="#">الاعدادات</a></li>
+              <li><a class="dropdown-item" href="#">تسجيل الخروج</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!--Employees Page-->
+  <main class="mt-4 px-3" style="margin-top: 80px !important">
+
+    <div class="row px-1 mb-2">
+      <div class="col-md-3">
+        <label class="fs-6 fw-bold px-1">ابحث:</label>
+        <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن عنوان">
+      </div>
+      <div class="col-md-2 py-4">
+        <button class="btn btn-primary createTaskBtn" data-bs-toggle="modal" href="#task-modal">انشاء مهمه</button>
+      </div>
+    </div>
+
+    <div class="row px-1 mt-3">
+      <p class="fs-6 fw-bold">فلتر المهام حسب:</p>
+    </div>
+
+    <div class="row px-1 py-2 mb-3" style="background: whitesmoke !important;">
+
+      <div class="col-md-2 mb-3">
+        <label class="fs-6 fw-bold px-1">الموظفين:</label>
+        <select class="form-select" id="employees">
+          <option value="الكل">الكل</option>
+          <option value="علي ستار">علي ستار</option>
+          <option value="روز حسين">روز حسين</option>
+          <option value="محمد ضياء">محمد ضياء</option>
+          <option value="شيماء حسين">شيماء حسين</option>
+          <option value="صفا فوزي">صفا فوزي</option>
+          <option value="امير حاتم">امير حاتم</option>
+          <option value="تيسير سامي">تيسير سامي</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 mb-3">
+        <label class="fs-6 fw-bold px-1">الحالة:</label>
+        <select class="form-select" id="task-status">
+          <option value="منجزة">منجزة</option>
+          <option value="غير منجزة">غير منجزة</option>
+          <option value="بأنتظار الموافقة">بأنتظار الموافقة</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 py-4">
+        <button class="btn btn-primary filterBtn" onClick="filterTasks()">تحديد</button>
+      </div>
+
+    </div>
+    </div>
+
+
+    <div class="row px-1">
+      <div class="table-responsive">
+        <table class="table tasks-table" id="task-table" style="width:100%">
+          <thead>
+            <tr>
+              <th style="display: none;">كود المهمه</th>
+              <th>عنوان المهمه</th>
+              <th>الموظفين</th>
+              <th>تاريخ البدء</th>
+              <th>تاريخ الانتهاء</th>
+              <th>التقييم</th>
+              <th>استلمت</th>
+              <th>الحالة</th>
+              <th span="0">تعديل</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="display: none;">1</td>
+              <td>مشكلة الغرامات الخاصة بقسم الشحن الجوي</td>
+              <td>
+                <select class="form-select task-employees" multiple="true">
+                  <option value="علي ستار" selected="true">علي ستار</option>
+                  <option value="روز حسين">روز حسين</option>
+                  <option value="محمد ضياء">محمد ضياء</option>
+                  <option value="شيماء حسين">شيماء حسين</option>
+                  <option value="صفا فوزي">صفا فوزي</option>
+                  <option value="امير حاتم">امير حاتم</option>
+                  <option value="تيسير سامي">تيسير سامي</option>
+                </select>
+              </td>
+              <td>2022-09-10</td>
+              <td style="color: red; font-weight: bold;">2022-10-10</td>
+              <td>
+                <select disabled="true" class="task-rate">
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="60">60</option>
+                  <option value="80">80</option>
+                  <option value="100">100</option>
+                </select>
+              </td>
+              <td>نعم</td>
+              <td style="color: green; font-weight: bold;">منجزة</td>
+              <td><input type="checkbox" onchange="editTask(1)"></td>
+              <td style="display: none;">
+                <a href="#">تحديث</a>
+                <a href="#" class="me-2">حذف</a>
+                <a href="#" class="me-2" style="display: none;">استلمت</a>
+                <a href="#" class="me-2" style="display: none;">انجزت</a>
+                <a href="#" class="me-2" style="display: none;">تأكيد</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="display: none;">2</td>
+              <td>تصميم موقع خاص بقسم الحاسبة الالكترونية</td>
+              <td>
+                <select class="form-select task-employees" multiple="true">
+                  <option value="علي ستار" selected="true">علي ستار</option>
+                  <option value="روز حسين">روز حسين</option>
+                  <option value="محمد ضياء">محمد ضياء</option>
+                  <option value="شيماء حسين">شيماء حسين</option>
+                  <option value="صفا فوزي">صفا فوزي</option>
+                  <option value="امير حاتم">امير حاتم</option>
+                  <option value="تيسير سامي">تيسير سامي</option>
+                </select>
+              </td>
+              <td>2022-10-25</td>
+              <td>2022-11-16</td>
+              <td>
+                <select disabled="true" class="task-rate">
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="60">60</option>
+                  <option value="80">80</option>
+                  <option value="100">100</option>
+                </select>
+              </td>
+              <td>نعم</td>
+              <td>غير منجزة</td>
+              <td><input type="checkbox" onchange="editTask(2)"></td>
+              <td style="display: none;">
+                <a href="#">تحديث</a>
+                <a href="#" class="me-2">حذف</a>
+                <a href="#" class="me-2" style="display: none;">استلمت</a>
+                <a href="#" class="me-2" style="display: none;">انجزت</a>
+                <a href="#" class="me-2" style="display: none;">تأكيد</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="display: none;">3</td>
+              <td>انشاء ايميلات لكل موظفي قسم الحاسبة الالكترونية</td>
+              <td>
+                <select class="form-select task-employees" multiple="true">
+                  <option value="علي ستار" selected="true">علي ستار</option>
+                  <option value="روز حسين" selected="true">روز حسين</option>
+                  <option value="محمد ضياء">محمد ضياء</option>
+                  <option value="شيماء حسين">شيماء حسين</option>
+                  <option value="صفا فوزي">صفا فوزي</option>
+                  <option value="امير حاتم">امير حاتم</option>
+                  <option value="تيسير سامي">تيسير سامي</option>
+                </select>
+              </td>
+              <td>2022-10-22</td>
+              <td>2022-11-16</td>
+              <td>
+                <select disabled="true" class="task-rate">
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="60">60</option>
+                  <option value="80">80</option>
+                  <option value="100">100</option>
+                </select>
+              </td>
+              <td>نعم</td>
+              <td style="font-weight: bold; color: #D35400">بأنتظار الموافقة</td>
+              <td><input type="checkbox" onchange="editTask(3)"></td>
+              <td style="display: none;">
+                <a href="#">تعديل</a>
+                <a href="#" class="me-2">حذف</a>
+                <a href="#" class="me-2" style="display: none;">استلمت</a>
+                <a href="#" class="me-2" style="display: none;">انجزت</a>
+                <a href="#" class="me-2" style="display: none;">تأكيد</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="display: none;">4</td>
+              <td>تعديل على نظام الرواتب الخاص بألقسم المالي</td>
+              <td>
+                <select class="form-select task-employees" multiple="true">
+                  <option value="علي ستار">علي ستار</option>
+                  <option value="روز حسين" selected="true">روز حسين</option>
+                  <option value="محمد ضياء">محمد ضياء</option>
+                  <option value="شيماء حسين">شيماء حسين</option>
+                  <option value="صفا فوزي">صفا فوزي</option>
+                  <option value="امير حاتم">امير حاتم</option>
+                  <option value="تيسير سامي">تيسير سامي</option>
+                </select>
+              </td>
+              <td>2022-10-16</td>
+              <td>2022-10-21</td>
+              <td>
+                <select disabled="true" class="task-rate">
+                  <option value="20">20</option>
+                  <option value="40">40</option>
+                  <option value="60">60</option>
+                  <option value="80">80</option>
+                  <option value="100">100</option>
+                </select>
+              </td>
+              <td>نعم</td>
+              <td>غير منجزة</td>
+              <td><input type="checkbox" onchange="editTask(4)"></td>
+              <td style="display: none;">
+                <a href="#">تحديث</a>
+                <a href="#" class="me-2">حذف</a>
+                <a href="#" class="me-2" style="display: none;">استلمت</a>
+                <a href="#" class="me-2" style="display: none;">انجزت</a>
+                <a href="#" class="me-2" style="display: none;">تأكيد</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="task-modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 bg-white" id="exampleModalToggleLabel">انشاء مهمة</h1>
+            <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST">
+              <div class="mb-3">
+                <label class="form-label fw-bold">عنوان المهمة</label>
+                <textarea class="form-control" rows="3"
+                  placeholder="تصميم موقع خاص بقسم الحاسبة الالكترونية"></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">من</label>
+                <div class="input-group date" id="datepicker1">
+                  <input type="text" class="form-control" placeholder="ادخل تاريخ البدء">
+                  <span class="input-group-append">
+                    <span class="input-group-text w-100">
+                      <i class="fa fa-calendar"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">الى</label>
+                <div class="input-group date" id="datepicker2">
+                  <input type="text" class="form-control" placeholder="ادخل تاريخ الانتهاء">
+                  <span class="input-group-append">
+                    <span class="input-group-text w-100">
+                      <i class="fa fa-calendar"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <!---->
+
+  <script src="{% static '/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static '/js/header/navbar.js' %}"></script>
+  <script src="{% static '/js/search/search.js' %}"></script>
+  <script src="{% static '/js/task/filter_task.js' %}"></script>
+  <script src="{% static '/js/task/edit_task.js' %}"></script>
+
+</body>
+
+</html>
