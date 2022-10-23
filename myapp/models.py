@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+# Profile table
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     division = models.CharField(max_length=100, blank=True, null=True)
@@ -18,8 +20,13 @@ class Profile(models.Model):
     # get the total number of users (employees)
     def getAllEmployees(self, request):
         return sum(User.objects.all())
+
+    # check if the user is exists or not
+    def isUser(self, request):
+        return bool(User.objects.filter(pk=request.user.id).exists())
         
 
+# link the current profile with the existing user
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(self, sender, instance, created, **kwargs):
     if created:
@@ -27,6 +34,7 @@ def create_or_update_user_profile(self, sender, instance, created, **kwargs):
     instance.profile.save()
 
 
+# Task table
 class Task(models.Model):
     user        = models.ForeignKey(User, on_delete=models.CASCADE)
     subject     = models.TextField(max_length=1000, blank=True, null=True)
@@ -44,6 +52,8 @@ class Task(models.Model):
     status      = models.CharField(max_length=100, choices=TASK_STATUS, default="غير منجزة")
     received    = models.BooleanField(default=False)
     created_at  = models.DateTimeField(auto_now_add=True)   
+    
+    # display the tasks subject in the admin panel
     def __str__(self):
       return self.subject
 
@@ -58,3 +68,30 @@ class Task(models.Model):
     # get the total tasks (tasks not acheived by users)
     def getNotAcheivedTasks(self, request):
         return sum(task.status == "غير منجزة" for task in Task.objects.all())
+
+    # get the last three tasks (tasks created by staff members)
+    def getLastThree(self, request):
+        tasks = list(Task.objects.prefetch_related("employees").order_by("-created_at")[:3])
+
+
+# Notification table
+class Notification(models.Model):
+    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    message     = models.TextField(max_length=1000, blank=True, null=True)
+    emps        = models.ManyToManyField(User, related_name="emps")
+    created_at  = models.DateTimeField(auto_now_add=True)
+    received    = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.message 
+
+    # get the total unreadable notifications for the current user 
+    def getUnreadableNotifications(self, request):
+        return sum(
+            not notification.received and request.user in notification.emps.all()
+            for notification in Notification.objects.all())
+    
+    # get the total notifications (readable and unreadable) for the current user
+    def getTotalNotifications(self, request):
+        return sum(request.user in notification.emps.all()
+            for notification in Notification.objects.all()) 
