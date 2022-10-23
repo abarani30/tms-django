@@ -1,0 +1,37 @@
+<div class="modal fade" id="user-modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 bg-white" id="exampleModalToggleLabel">انشاء حساب</h1>
+          <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-bold">اسم المستخدم</label>
+              <input type="text" class="form-control" placeholder="محمد علي">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">كلمة المرور</label>
+              <input type="password" class="form-control" placeholder="******">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">البريد الالكتروني</label>
+              <input type="email" class="form-control" placeholder="mohammed.ali@outlook.com">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">نوع الحساب</label>
+              <select class="form-select" aria-label="Default select example">
+                <option value="ادمن">ادمن</option>
+                <option value="محرر">محرر</option>
+                <option value="مستخدم">مستخدم</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary">حفظ</button>
+        </div>
+      </div>
+    </div>
+</div>

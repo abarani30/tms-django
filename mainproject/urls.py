@@ -4,8 +4,6 @@ from django.conf import settings
 
 if settings.DEBUG:
     urlpatterns = [
-        path('admin/', admin.site.urls),
-        path("", include('account.urls')),
-        path("tasks/", include('task.urls')),
-        path("notifications/", include("notification.urls"))
+        #path('admin/', admin.site.urls),
+        path("", include('myapp.urls')),
     ]
