@@ -38,10 +38,10 @@
         <div class="col-md-12">
           <u class="fw-bold">الاحصائيات:</u>
           <ul class="px-4 statistics">
-            <li class="pt-1">عدد المهام: <b>30</b></li>
-            <li class="pt-1">مهام منجزة: <b>25</b></li>
-            <li class="pt-1">مهام غير منجزة: <b>5</b></li>
-            <li class="pt-1">عدد الموظفين: <b>25</b></li>
+            <li class="pt-1">عدد المهام: <b>{{task.countStaffTasks}}</b></li>
+            <li class="pt-1">مهام منجزة: <b>{{task.countAcheivedTasks}}</b></li>
+            <li class="pt-1">مهام غير منجزة: <b>{{task.countNotAcheivedTasks}}</b></li>
+            <li class="pt-1">عدد الموظفين: <b>{{profile.getAllEmployees}}</b></li>
           </ul>
         </div>
       </div>
@@ -77,39 +77,23 @@
         <div class="col-md-12">
           <u class="fw-bold">احدث المهام:</u>
           <ul class="px-4 statistics">
-            <li>
-              قام
-              <b>امير حاتم</b>
-              بتخصيص مهمه
-              الى
-              <b>علي ستار</b>
-              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
-                title="تصميم موقع لقسم الحاسبة">
-                (معرفة المزيد)
-              </button>
-            </li>
-            <li>
-              قام
-              <b>بكر هادي</b>
-              بتخصيص مهمه
-              الى
-              <b>انور اكرم</b>
-              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
-                title="ربط كيبل بألقسم الفني - شعبة المعامل الميكانيكية">
-                (معرفة المزيد)
-              </button>
-            </li>
-            <li>
-              قام
-              <b>بكر هادي</b>
-              بتخصيص مهمه
-              الى
-              <b>علا شامل, مروه محمد</b>
-              <button type="button" class="btn" data-bs-toggle="tooltip" data-bs-placement="left"
-                title="انشاء بريد الكتروني لكل موظفي قسم الحاسبة الالكترونية لغرض نظام ادارة المهام">
-                (معرفة المزيد)
-              </button>
-            </li>
+            {% for task in task.getLastThree %}
+              <li>
+                قام
+                <b>{{task.user.username}}</b>
+                بتخصيص مهمه
+                ({{task.subject}})
+                الى
+                {% for emp in task.employees.all %}
+                  {% if task.employees.all.count == 1 %}
+                    <b>{{emp}}</b>
+                  {% else %}
+                    <b>{{emp}},</b>
+                  {% endif %}
+                {% endfor %}
+                يوم {{task.start_day}}
+              </li>
+            {% endfor %}
           </ul>
         </div>
       </div>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{% load static %}
+
+<head>
+  {% include "base/head.html" %}
+  <title>الصفحة الرئيسية</title>
+</head>
+
+<body>
+    <div class="d-flex justify-content-center align-items-center w-100 vh-100 p-2 wrapper">
+        <div class="login-container p-3">
+          <p class="py-2 login-label">
+            تسجيل الدخول
+          </p>
+          <form method="post" class="row g-3 needs-validation login-form" novalidate>
+            {% csrf_token %}
+            <div class="col-md-12">
+              <label for="validationCustomUsername" class="form-label">اسم الموظف:</label>
+              <div class="input-group has-validation">
+                <input type="text" name="username" placeholder="احمد عباس" class="form-control" id="username"
+                  aria-describedby="inputGroupPrepend" required>
+                <div class="invalid-feedback">
+                  يرجى كتابة الاسم
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-12">
+              <label class="form-label">كلمة المرور:</label>
+              <div class="input-group has-validation">
+                <input type="password" name="password" placeholder="******" class="form-control" id="password"
+                  aria-describedby="inputGroupPrepend" required>
+                <div class="invalid-feedback">
+                  يرجى كتابة كلمة المرور
+                </div>
+              </div>
+            </div>
+            <div>
+              {% if errMsg %}
+              <div class="alert alert-danger alert-dismissible fade show d-flex justify-content-start p-2" id="alert_form"
+                role="alert">
+                <button type="button" class="alert-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{errMsg}}
+              </div>
+              {% endif %}
+            </div>
+            <div>
+              <button class="btn btn-primary w-100 fw-bold" type="submit" name="loginBtn">دخول</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    {% include "base/script.html" %}
+</body>
+
+</html>

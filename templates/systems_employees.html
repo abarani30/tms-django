@@ -41,88 +41,34 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style="display: none;">1</td>
-              <td>علي ستار</td>
-              <td>alisattarbarani@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة" selected="true">الانظمة</option>
-                  <option value="الفنية">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم" selected="true">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('علي ستار')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('علي ستار')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-
-            </tr>
-
-            <tr>
-              <td style="display: none;">2</td>
-              <td>امير حاتم</td>
-              <td>ameer_hattam@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة" selected="true">الانظمة</option>
-                  <option value="الفنية">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن" selected="true">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('امير حاتم')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('امير حاتم')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="display: none;">3</td>
-              <td>محمد ضياء</td>
-              <td>m_diyaa@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة" selected="true">الانظمة</option>
-                  <option value="الفنية">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم" selected="true">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('محمد ضياء')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('محمد ضياء')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-            </tr>
-
+            {% for employeer in profile.getAllSystemsEmployees %}
+              <tr>
+                <td style="display: none;">1</td>
+                <td>{{employeer.username}}</td>
+                <td>{{employeer.email}}</td>
+                <td>
+                  <select disabled="true" class="table-division">
+                    <option value="الانظمة" selected="true">{{employeer.profile.division}}</option>
+                    <option value="الفنية">الفنية</option>
+                    <option value="الذاتية">الذاتية</option>
+                    <option value="ادخال البيانات">ادخال البيانات</option>
+                  </select>
+                </td>
+                <td>
+                  <select disabled="true" class="table-account">
+                    <option value="ادمن">ادمن</option>
+                    <option value="محرر">محرر</option>
+                    <option value="مستخدم" selected="true">مستخدم</option>
+                  </select>
+                </td>
+                <td>مفعل</td>
+                <td><input type="checkbox" onchange="editUser(`{{employeer.username}}`)"></td>
+                <td style="display: none;">
+                  <a href="#" id="update-link" class="me-2" onclick="updateUser('علي ستار')">تحديث</a>
+                  <a href="#" class="me-2">حذف</a>
+                </td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>

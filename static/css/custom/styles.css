@@ -167,6 +167,58 @@ textarea {
 }
 
 
+/* ========= Login Page ========= */
+.wrapper {
+  background-color: white !important;
+  direction: rtl;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+
+
+.login-label {
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.alert {
+  font-size: 0.9rem !important;
+}
+
+.alert-close {
+  box-sizing: content-box;
+  width: 0.25em;
+  height: 0.25em;
+  margin: 2px auto;
+  margin-right: 3px;
+  padding: 0.25em 0.25em;
+  color: #000;
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  border-radius: 0.25rem;
+  opacity: .5;
+}
+
+.login-container {
+  width: 320px;
+  height: auto;
+}
+
+/* ============================== */
+
 @media (min-width: 300px) and (max-width: 599px) {
   .navbar-brand {
     margin-right: 0px !important;
@@ -196,6 +248,10 @@ textarea {
     align-items: start !important;
     flex-direction: column !important;
     gap: 10px;
+  }
+
+  .login-container {
+    box-shadow: none;
   }
 
 }

@@ -18,17 +18,21 @@ class Profile(models.Model):
         return self.user.username
 
     # get the total number of users (employees)
-    def getAllEmployees(self, request):
-        return sum(User.objects.all())
+    def getAllEmployees(self):  # sourcery skip: simplify-generator
+        return User.objects.all().count()
 
     # check if the user is exists or not
     def isUser(self, request):
         return bool(User.objects.filter(pk=request.user.id).exists())
-        
+    
+    # get all the employees for systems division
+    def getAllSystemsEmployees(self, request):
+        return [user for user in User.objects.all() if request.user.profile.division == user.profile.division]
+
 
 # link the current profile with the existing user
 @receiver(post_save, sender=User)
-def create_or_update_user_profile(self, sender, instance, created, **kwargs):
+def create_or_update_user_profile(instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
     instance.profile.save()
@@ -57,22 +61,31 @@ class Task(models.Model):
     def __str__(self):
       return self.subject
 
-    # get the total tasks (tasks created by staff members)
-    def getStaffTasks(self, request):
+    # count the total tasks (tasks created by staff members)
+    def countStaffTasks(self):
         return sum(not task.user.is_superuser for task in Task.objects.all())
     
-    # get the total tasks (tasks acheived by users)
-    def getAcheivedTasks(self, request):
-        return sum(task.status == "منجزة" for task in Task.objects.all())
+    # count the total tasks (tasks acheived by users)
+    def countAcheivedTasks(self):
+        return sum(task.status == "منجزة" and not task.user.is_superuser for task in Task.objects.all())
     
-    # get the total tasks (tasks not acheived by users)
-    def getNotAcheivedTasks(self, request):
-        return sum(task.status == "غير منجزة" for task in Task.objects.all())
+    # count the total tasks (tasks not acheived by users)
+    def countNotAcheivedTasks(self):
+        return sum(task.status == "غير منجزة" and not task.user.is_superuser for task in Task.objects.all())
 
     # get the last three tasks (tasks created by staff members)
-    def getLastThree(self, request):
-        tasks = list(Task.objects.prefetch_related("employees").order_by("-created_at")[:3])
+    def getLastThree(self):
+        return Task.objects.prefetch_related("employees").order_by("-created_at")[:3]
 
+    # count the total tasks for the systems division
+    def countSystemsTasks(self):
+        week = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
+        return [sum(task.start_day == day and task.user.profile.division == "الانظمة" and not task.user.is_superuser for task in Task.objects.all()) for day in week]
+    
+    # count the total tasks for the systems division
+    def countMaintenanceTasks(self):
+        week = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
+        return [sum(task.start_day == day and task.user.profile.division == "الفنية" and not task.user.is_superuser for task in Task.objects.all()) for day in week]
 
 # Notification table
 class Notification(models.Model):
@@ -90,7 +103,7 @@ class Notification(models.Model):
         return sum(
             not notification.received and request.user in notification.emps.all()
             for notification in Notification.objects.all())
-    
+
     # get the total notifications (readable and unreadable) for the current user
     def getTotalNotifications(self, request):
         return sum(request.user in notification.emps.all()
