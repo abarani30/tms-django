@@ -24,10 +24,6 @@ class Profile(models.Model):
     # check if the user is exists or not
     def isUser(self, request):
         return bool(User.objects.filter(pk=request.user.id).exists())
-    
-    # get all the employees for systems division
-    def getAllSystemsEmployees(self, request):
-        return [user for user in User.objects.all() if request.user.profile.division == user.profile.division]
 
 
 # link the current profile with the existing user

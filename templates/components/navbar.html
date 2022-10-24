@@ -20,10 +20,16 @@
               الموظفين
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
-              <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
-              <li><a class="dropdown-item" href="#">الادارية</a></li>
-              <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>
+              {% if request.user.is_superuser %}
+                <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+                <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
+                <li><a class="dropdown-item" href="#">الادارية</a></li>
+                <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>      
+              {% else %}
+                {% if request.user.profile.division == "الانظمة" %}
+                  <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+                {% endif %}
+              {% endif %}
             </ul>
           </li>
           <li class="nav-item dropdown">
@@ -60,7 +66,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="#profile">الملف الشخصي</a></li>
               <li><a class="dropdown-item" href="#settings">الاعدادات</a></li>
-              <li><a class="dropdown-item" href="#logout">تسجيل الخروج</a></li>
+              <li><a class="dropdown-item" href="/logout/">تسجيل الخروج</a></li>
             </ul>
           </li>
         </ul>

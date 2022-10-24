@@ -1,7 +1,7 @@
 from tempfile import template
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
-from django.contrib.auth import login 
+from django.contrib.auth import login, logout
 
 def loginUser(request):
     if request.user.is_authenticated:
@@ -15,3 +15,8 @@ def loginUser(request):
         return redirect("/")    
       return render(request, "login.html", {"errMsg": "لقد فشلت عملية تسجيل الدخول"})   
     return render(request, 'login.html')
+
+
+def logoutUser(request):
+  logout(request)
+  return redirect("/accounts/login/")

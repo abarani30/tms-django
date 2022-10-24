@@ -8,8 +8,6 @@ class HomePageView(View):
   def get(self, request):
     profile = Profile.objects.all()
     task    = Task.objects.prefetch_related("employees")
-    print(task[0].countSystemsTasks())
-    print(profile[0].getAllSystemsEmployees(request))
     return render(request, self.template_name, 
       {
         "profile": profile[0],
