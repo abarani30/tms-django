@@ -6,6 +6,7 @@ class SystemsEmployeesView(View):
   template_name = "systems_employees.html"
 
   def get(self, request):
-    # get all the employees according to their division
-    employees = [user for user in User.objects.all().select_related("profile") if request.user.profile.division == user.profile.division and user.is_active]
-    return render(request, self.template_name, {"employees": employees})
+    return render(request, self.template_name, {"employees": self.getAllUsers()})
+
+  def getAllUsers(self):
+    return [user for user in User.objects.all().select_related("profile") if user.profile.division == "الانظمة" and user.is_active]

@@ -21,7 +21,7 @@
         <label class="fs-6 fw-bold px-1">ابحث:</label>
         <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن اسم">
       </div>
-      {% if request.user.is_staff %}
+      {% if user.is_staff and not user.is_superuser %}
       <div class="col-md-2 py-4">
         <button class="btn btn-primary createTaskBtn" data-bs-toggle="modal" href="#user-modal">انشاء حساب</button>
       </div>
@@ -51,7 +51,7 @@
                 <td>{{employee.username}}</td>
                 <td>{{employee.email}}</td>
                 <td>
-                  {% if request.user.is_staff %}
+                  {% if user.is_staff %}
                   <select disabled="true" class="table-division">
                     <option value="الانظمة" selected="true">{{employee.profile.division}}</option>
                     <option value="الفنية">الفنية</option>
@@ -63,7 +63,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% if request.user.is_staff %}
+                  {% if user.is_staff %}
                   <select disabled="true" class="table-account">
                     {% if employee.is_staff %}
                     <option value="ادمن" selected="true">ادمن</option>
@@ -76,15 +76,11 @@
                     {% endif %}
                   </select>
                   {% else %}
-                    {% if employee.is_staff %}
-                    ادمن
-                    {% else %}
-                    مستخدم
-                    {% endif %}
+                    {{employee.profile.account}}
                   {% endif %}
                 </td>
                 <td>مفعل</td>
-                {% if request.user.is_staff %}
+                {% if user.is_staff %}
                 <td><input type="checkbox" onchange="editUser(`{{employee.username}}`)"></td>
                 <td style="display: none;">
                   <a href="#" id="update-link" class="me-2" onclick="updateUser(`{{employee.username}}`)">تحديث</a>
@@ -99,7 +95,7 @@
     </div>
 
     <!--User Modal-->
-    {% if request.user.is_staff %}
+    {% if user.is_staff and not user.is_superuser %}
       {% include "components/user_modal.html" %}
     {% endif %}
     <!---->

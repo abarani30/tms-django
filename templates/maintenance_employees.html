@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar">
 
+  {% load static %}
+
 <head>
   {% include "base/head.html" %}
   <title>موظفين الشعبة الفنية</title>
@@ -19,12 +21,13 @@
         <label class="fs-6 fw-bold px-1">ابحث:</label>
         <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن اسم">
       </div>
+      {% if user.is_staff and not user.is_superuser %}
       <div class="col-md-2 py-4">
-        <button class="btn btn-primary createTaskBtn">انشاء حساب</button>
+        <button class="btn btn-primary createTaskBtn" data-bs-toggle="modal" href="#user-modal">انشاء حساب</button>
       </div>
+      {% endif %}
     </div>
-
-    <div class="row px-1">
+    <div class="row px-1 mt-2">
       <div class="table-responsive">
         <table id="table" class="table" style="width:100%">
           <thead>
@@ -35,136 +38,68 @@
               <th>الشعبة</th>
               <th>نوع الحساب</th>
               <th>حالة الحساب</th>
+              {% if user.is_staff %}
               <th span="0">تعديل</th>
+              {% endif %}
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style="display: none;">1</td>
-              <td>انور اكرم</td>
-              <td>anwer.akram@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة">الانظمة</option>
-                  <option value="الفنية" selected="true">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم" selected="true">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('انور اكرم')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('انور اكرم')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-
-            </tr>
-
-            <tr>
-              <td style="display: none;">2</td>
-              <td>علي صادق</td>
-              <td>ali1.sadeq@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة">الانظمة</option>
-                  <option value="الفنية" selected="true">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم" selected="true">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('علي صادق')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('علي صادق')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="display: none;">3</td>
-              <td>محمد قاسم</td>
-              <td>mohammed1.qassim@outlook.com</td>
-              <td>
-                <select disabled="true" class="table-division">
-                  <option value="الانظمة">الانظمة</option>
-                  <option value="الفنية" selected="true">الفنية</option>
-                  <option value="الذاتية">الذاتية</option>
-                  <option value="ادخال البيانات">ادخال البيانات</option>
-                </select>
-              </td>
-              <td>
-                <select disabled="true" class="table-account">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم" selected="true">مستخدم</option>
-                </select>
-              </td>
-              <td>مفعل</td>
-              <td><input type="checkbox" onchange="editUser('محمد قاسم')"></td>
-              <td style="display: none;">
-                <a href="#" id="update-link" class="me-2" onclick="updateUser('محمد قاسم')">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-              </td>
-            </tr>
-
+            {% for employee in employees %}
+              <tr>
+                <td style="display: none;">1</td>
+                <td>{{employee.username}}</td>
+                <td>{{employee.email}}</td>
+                <td>
+                  {% if user.is_staff %}
+                  <select disabled="true" class="table-division">
+                    <option value="الانظمة" selected="true">{{employee.profile.division}}</option>
+                    <option value="الفنية">الفنية</option>
+                    <option value="الذاتية">الذاتية</option>
+                    <option value="ادخال البيانات">ادخال البيانات</option>
+                  </select>
+                  {% else %}
+                  الانظمة
+                  {% endif %}
+                </td>
+                <td>
+                  {% if user.is_staff %}
+                  <select disabled="true" class="table-account">
+                    {% if employee.is_staff %}
+                    <option value="ادمن" selected="true">ادمن</option>
+                    <option value="محرر">محرر</option>
+                    <option value="مستخدم">مستخدم</option>
+                    {% else %}
+                    <option value="ادمن">ادمن</option>
+                    <option value="محرر">محرر</option>
+                    <option value="مستخدم" selected="true">مستخدم</option>
+                    {% endif %}
+                  </select>
+                  {% else %}
+                    {{employee.profile.account}}
+                  {% endif %}
+                </td>
+                <td>مفعل</td>
+                {% if user.is_staff %}
+                <td><input type="checkbox" onchange="editUser(`{{employee.username}}`)"></td>
+                <td style="display: none;">
+                  <a href="#" id="update-link" class="me-2" onclick="updateUser(`{{employee.username}}`)">تحديث</a>
+                  <a href="#" class="me-2">حذف</a>
+                </td>
+                {% endif %}
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="modal fade" id="user-modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 bg-white" id="exampleModalToggleLabel">انشاء حساب</h1>
-            <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST">
-              <div class="mb-3">
-                <label class="form-label fw-bold">اسم المستخدم</label>
-                <input type="text" class="form-control" placeholder="محمد علي">
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">كلمة المرور</label>
-                <input type="password" class="form-control" placeholder="******">
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">البريد الالكتروني</label>
-                <input type="email" class="form-control" placeholder="mohammed.ali@outlook.com">
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-bold">نوع الحساب</label>
-                <select class="form-select" aria-label="Default select example">
-                  <option value="ادمن">ادمن</option>
-                  <option value="محرر">محرر</option>
-                  <option value="مستخدم">مستخدم</option>
-                </select>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary">حفظ</button>
-          </div>
-        </div>
-      </div>
+    <!--User Modal-->
+    {% if user.is_staff and not user.is_superuser %}
+      {% include "components/user_modal.html" %}
+    {% endif %}
+    <!---->
 
-    </div>
   </main>
   <!---->
 

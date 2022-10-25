@@ -1,3 +1,5 @@
+from email.policy import default
+from random import choices
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -9,6 +11,12 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     division = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.CharField(max_length=500, blank=True, null=True)
+    ACCOUNT_TYPE = [
+      ("ادمن", "ادمن"),
+      ("محرر", "محرر"),
+      ("مستخدم", "مستخدم")
+    ]
+    account     = models.CharField(max_length=100, choices=ACCOUNT_TYPE, default="مستخدم")
     behaviour   = models.IntegerField(default=0)
     compliance  = models.IntegerField(default=0)
     progress    = models.IntegerField(default=0)

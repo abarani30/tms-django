@@ -17,16 +17,19 @@
   <!--Systems Tasks Page-->
   <main class="mt-4 px-3" style="margin-top: 80px !important">
 
-    <div class="row px-1 mb-2">
+    <div class="row px-1 mb-3">
       <div class="col-md-3">
         <label class="fs-6 fw-bold px-1">ابحث:</label>
         <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن عنوان">
       </div>
+      {% if user.is_staff %}
       <div class="col-md-2 py-4">
         <button class="btn btn-primary createTaskBtn" data-bs-toggle="modal" href="#task-modal">انشاء مهمه</button>
       </div>
+      {% endif %}
     </div>
 
+    {% if user.is_staff %}
     <div class="row px-1 mt-3">
       <p class="fs-6 fw-bold">فلتر المهام حسب:</p>
     </div>
@@ -37,13 +40,11 @@
         <label class="fs-6 fw-bold px-1">الموظفين:</label>
         <select class="form-select" id="employees">
           <option value="الكل">الكل</option>
-          <option value="علي ستار">علي ستار</option>
-          <option value="روز حسين">روز حسين</option>
-          <option value="محمد ضياء">محمد ضياء</option>
-          <option value="شيماء حسين">شيماء حسين</option>
-          <option value="صفا فوزي">صفا فوزي</option>
-          <option value="امير حاتم">امير حاتم</option>
-          <option value="تيسير سامي">تيسير سامي</option>
+          {% for employee in employees %}
+            {% if not employee.is_staff %}
+            <option value=`{{employee.username}}`>{{employee.username}}</option>
+            {% endif %}
+          {% endfor %}
         </select>
       </div>
 
@@ -61,8 +62,7 @@
       </div>
 
     </div>
-    </div>
-
+    {% endif %}
 
     <div class="row px-1">
       <div class="table-responsive">
@@ -74,159 +74,124 @@
               <th>الموظفين</th>
               <th>تاريخ البدء</th>
               <th>تاريخ الانتهاء</th>
+              {% if user.is_staff %}
               <th>التقييم</th>
+              {% endif %}
               <th>استلمت</th>
               <th>الحالة</th>
+              {% if user.is_staff %}
               <th span="0">تعديل</th>
+              {% endif %}
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style="display: none;">1</td>
-              <td>مشكلة الغرامات الخاصة بقسم الشحن الجوي</td>
-              <td>
-                <select class="form-select task-employees" multiple="true">
-                  <option value="علي ستار" selected="true">علي ستار</option>
-                  <option value="روز حسين">روز حسين</option>
-                  <option value="محمد ضياء">محمد ضياء</option>
-                  <option value="شيماء حسين">شيماء حسين</option>
-                  <option value="صفا فوزي">صفا فوزي</option>
-                  <option value="امير حاتم">امير حاتم</option>
-                  <option value="تيسير سامي">تيسير سامي</option>
-                </select>
-              </td>
-              <td>2022-09-10</td>
-              <td style="color: red; font-weight: bold;">2022-10-10</td>
-              <td>
-                <select disabled="true" class="task-rate">
-                  <option value="20">20</option>
-                  <option value="40">40</option>
-                  <option value="60">60</option>
-                  <option value="80">80</option>
-                  <option value="100">100</option>
-                </select>
-              </td>
-              <td>نعم</td>
-              <td style="color: green; font-weight: bold;">منجزة</td>
-              <td><input type="checkbox" onchange="editTask(1)"></td>
-              <td style="display: none;">
-                <a href="#">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-                <a href="#" class="me-2" style="display: none;">استلمت</a>
-                <a href="#" class="me-2" style="display: none;">انجزت</a>
-                <a href="#" class="me-2" style="display: none;">تأكيد</a>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="display: none;">2</td>
-              <td>تصميم موقع خاص بقسم الحاسبة الالكترونية</td>
-              <td>
-                <select class="form-select task-employees" multiple="true">
-                  <option value="علي ستار" selected="true">علي ستار</option>
-                  <option value="روز حسين">روز حسين</option>
-                  <option value="محمد ضياء">محمد ضياء</option>
-                  <option value="شيماء حسين">شيماء حسين</option>
-                  <option value="صفا فوزي">صفا فوزي</option>
-                  <option value="امير حاتم">امير حاتم</option>
-                  <option value="تيسير سامي">تيسير سامي</option>
-                </select>
-              </td>
-              <td>2022-10-25</td>
-              <td>2022-11-16</td>
-              <td>
-                <select disabled="true" class="task-rate">
-                  <option value="20">20</option>
-                  <option value="40">40</option>
-                  <option value="60">60</option>
-                  <option value="80">80</option>
-                  <option value="100">100</option>
-                </select>
-              </td>
-              <td>نعم</td>
-              <td>غير منجزة</td>
-              <td><input type="checkbox" onchange="editTask(2)"></td>
-              <td style="display: none;">
-                <a href="#">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-                <a href="#" class="me-2" style="display: none;">استلمت</a>
-                <a href="#" class="me-2" style="display: none;">انجزت</a>
-                <a href="#" class="me-2" style="display: none;">تأكيد</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="display: none;">3</td>
-              <td>انشاء ايميلات لكل موظفي قسم الحاسبة الالكترونية</td>
-              <td>
-                <select class="form-select task-employees" multiple="true">
-                  <option value="علي ستار" selected="true">علي ستار</option>
-                  <option value="روز حسين" selected="true">روز حسين</option>
-                  <option value="محمد ضياء">محمد ضياء</option>
-                  <option value="شيماء حسين">شيماء حسين</option>
-                  <option value="صفا فوزي">صفا فوزي</option>
-                  <option value="امير حاتم">امير حاتم</option>
-                  <option value="تيسير سامي">تيسير سامي</option>
-                </select>
-              </td>
-              <td>2022-10-22</td>
-              <td>2022-11-16</td>
-              <td>
-                <select disabled="true" class="task-rate">
-                  <option value="20">20</option>
-                  <option value="40">40</option>
-                  <option value="60">60</option>
-                  <option value="80">80</option>
-                  <option value="100">100</option>
-                </select>
-              </td>
-              <td>نعم</td>
-              <td style="font-weight: bold; color: #D35400">بأنتظار الموافقة</td>
-              <td><input type="checkbox" onchange="editTask(3)"></td>
-              <td style="display: none;">
-                <a href="#">تعديل</a>
-                <a href="#" class="me-2">حذف</a>
-                <a href="#" class="me-2" style="display: none;">استلمت</a>
-                <a href="#" class="me-2" style="display: none;">انجزت</a>
-                <a href="#" class="me-2" style="display: none;">تأكيد</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="display: none;">4</td>
-              <td>تعديل على نظام الرواتب الخاص بألقسم المالي</td>
-              <td>
-                <select class="form-select task-employees" multiple="true">
-                  <option value="علي ستار">علي ستار</option>
-                  <option value="روز حسين" selected="true">روز حسين</option>
-                  <option value="محمد ضياء">محمد ضياء</option>
-                  <option value="شيماء حسين">شيماء حسين</option>
-                  <option value="صفا فوزي">صفا فوزي</option>
-                  <option value="امير حاتم">امير حاتم</option>
-                  <option value="تيسير سامي">تيسير سامي</option>
-                </select>
-              </td>
-              <td>2022-10-16</td>
-              <td>2022-10-21</td>
-              <td>
-                <select disabled="true" class="task-rate">
-                  <option value="20">20</option>
-                  <option value="40">40</option>
-                  <option value="60">60</option>
-                  <option value="80">80</option>
-                  <option value="100">100</option>
-                </select>
-              </td>
-              <td>نعم</td>
-              <td>غير منجزة</td>
-              <td><input type="checkbox" onchange="editTask(4)"></td>
-              <td style="display: none;">
-                <a href="#">تحديث</a>
-                <a href="#" class="me-2">حذف</a>
-                <a href="#" class="me-2" style="display: none;">استلمت</a>
-                <a href="#" class="me-2" style="display: none;">انجزت</a>
-                <a href="#" class="me-2" style="display: none;">تأكيد</a>
-              </td>
-            </tr>
+            {% for task in tasks %}
+              {% if user.is_staff %}
+              <tr>
+                <td style="display: none;">{{task.id}}</td>
+                <td>{{task.subject}}</td>
+                <td>
+                  <select class="form-select task-employees" multiple="true">
+                    {% for employee in employees %}
+                      {% if not employee.is_staff %}
+                        {% if employee in task.employees.all %}
+                        <option value=`{{employee.username}}` selected="true">{{employee.username}}</option>
+                        {% else %}
+                        <option value=`{{employee.username}}`>{{employee.username}}</option>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </td>
+                <td>{{task.start_date}}</td>
+                {% now "Y-m-d" as todays_date %}
+                {% if todays_date > task.end_date %}
+                  <td class="fw-bold text-danger">
+                    {{task.end_date}}
+                  </td>
+                {% else %}
+                <td class="fw-bold text-success">
+                  {{task.end_date}}
+                </td>
+                {% endif %}
+                <td>
+                  <select disabled="true" class="task-rate">
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                  </select>
+                </td>
+                <td>
+                  {% if task.received %}
+                  نعم
+                  {% else %}
+                  كلا
+                  {% endif %}
+                </td>
+                {% if task.status == "منجزة" %}
+                <td class="fw-bold text-success">{{task.status}}</td>
+                {% endif %}
+                {% if task.status == "غير منجزة" %}
+                <td class="fw-bold text-danger">{{task.status}}</td>
+                {% endif %}
+                {% if task.status == "بأنتظار الموافقة" %}
+                <td class="fw-bold text-warning">{{task.status}}</td>
+                {% endif %}
+                <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
+                <td style="display: none;">
+                  <a href="#">تحديث</a>
+                  <a href="#" class="me-2">حذف</a>
+                  <a href="#" class="me-2" style="display: none;">تأكيد</a>
+                </td>
+              </tr>
+              {% else %}
+                {% if user in task.employees.all %}
+                <tr>
+                  <td style="display: none;">{{task.id}}</td>
+                  <td>{{task.subject}}</td>
+                  <td>
+                  {% for employee in task.employees.all %}
+                  {{employee.username}}
+                  {% endfor %}
+                  </td>
+                  <td>{{task.start_date}}</td>
+                  {% now "Y-m-d" as todays_date %}
+                  {% if todays_date > task.end_date %}
+                    <td class="fw-bold text-danger">
+                      {{task.end_date}}
+                    </td>
+                  {% else %}
+                  <td class="fw-bold text-success">
+                    {{task.end_date}}
+                  </td>
+                  {% endif %}
+                  <td>
+                    {% if task.received %}
+                    نعم
+                    {% else %}
+                    كلا
+                    {% endif %}
+                  </td>
+                  {% if task.status == "منجزة" %}
+                  <td class="fw-bold text-success">{{task.status}}</td>
+                  {% endif %}
+                  {% if task.status == "غير منجزة" %}
+                  <td class="fw-bold text-danger">{{task.status}}</td>
+                  {% endif %}
+                  {% if task.status == "بأنتظار الموافقة" %}
+                  <td class="fw-bold text-warning">{{task.status}}</td>
+                  {% endif %}
+                  <td>
+                    <a href="#" class="me-2">استلمت</a>
+                    <a href="#" class="me-2">انجزت</a>
+                  </td>
+                </tr>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
           </tbody>
         </table>
       </div>

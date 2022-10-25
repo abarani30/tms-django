@@ -20,14 +20,17 @@
               الموظفين
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if request.user.is_superuser %}
-                <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
-                <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
-                <li><a class="dropdown-item" href="#">الادارية</a></li>
-                <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>      
+              {% if user.is_superuser %}
+              <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+              <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
+              <li><a class="dropdown-item" href="#">الادارية</a></li>
+              <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>      
               {% else %}
-                {% if request.user.profile.division == "الانظمة" %}
-                  <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+                {% if user.profile.division == "الانظمة" %}
+                <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
+                {% endif %}
+                {% if user.profile.division == "الفنية"  %}
+                <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
                 {% endif %}
               {% endif %}
             </ul>
@@ -38,17 +41,28 @@
               المهام
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% if user.is_superuser %}
               <li><a class="dropdown-item" href="/tasks/director/">المدير</a></li>
               <li><a class="dropdown-item" href="/tasks/systems/">الانظمة</a></li>
               <li><a class="dropdown-item" href="#">الفنية</a></li>
+              {% else %}
+                {% if user.profile.division == "الانظمة" %}
+                <li><a class="dropdown-item" href="/tasks/systems/">الانظمة</a></li>
+                {% endif %}
+                {% if user.profile.division == "الفنية" %}
+                <li><a class="dropdown-item" href="#">الفنية</a></li>
+                {% endif %}
+              {% endif %}
             </ul>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#reports">التقارير</a>
           </li>
+          {% if user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link" href="#history">السجل</a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="/notifications/">
               الاشعارات
@@ -61,7 +75,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#user-dropdown" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
-              اهلاً, <b style="color: black">علي ستار</b>
+              اهلاً, <b style="color: black">{{user.username}}</b>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="#profile">الملف الشخصي</a></li>

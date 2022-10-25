@@ -33,6 +33,23 @@
                   </span>
                 </span>
               </div>
+
+              <div class="col-md-12 mb-3 mt-4">
+                <label class="form-label fw-bold">الموظفين:</label>
+                <div class="input-group d-flex">
+                 {% for employee in employees %}
+                  {% if not employee.is_staff %}
+                  <div class="d-flex ms-3">
+                    <input class="form-check-input me-1" type="checkbox" value="{{u.username}}" id="employees">
+                    <label class="form-check-label me-2" for="flexCheckDefault">
+                      {{employee.username}}
+                    </label>
+                  </div>
+                  {% endif %}
+                 {% endfor %}
+                </div>
+              </div>
+
             </div>
           </form>
         </div>
