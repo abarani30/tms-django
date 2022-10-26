@@ -16,9 +16,14 @@ class SystemTasksView(View):
     }
     )
 
+  # get all the active users 
   def getAllUsers(self):
-    return [user for user in User.objects.all().select_related("profile") if user.profile.division == "الانظمة" and user.is_active]
+    return [
+      user for user in User.objects.all().select_related("profile") 
+      if user.profile.division == "الانظمة" and user.is_active
+    ]
 
+  # get all the tasks in the current month 
   def getAllTasks(self):
     return [
       task 
@@ -28,15 +33,35 @@ class SystemTasksView(View):
       if task.user.profile.division == "الانظمة" 
     ]
 
-  def getFirstDayOfMonth(self):
+  # get the first day in a month
+  def getFirstDayOfMonth(self) -> str:
     return str(datetime.date.today().replace(day=1))
   
-  def getLastDayOfMonth(self):
+  # get the last day in a month
+  def getLastDayOfMonth(self) -> str:
     return str(datetime.date.today().replace(day=31))
 
-  
+  # check if the request
+  def checkHTTPRequest(self, request) -> bool:
+    return (request.META.get("HTTP_X_CSRFTOKEN") != request.POST.get("csrftoken") or 
+    request.headers.get("X-Requested-With") != "XMLHttpRequest" or 
+    not request.user.is_staff)
+    
+  # get the form data from ajax request
+  def getFormData(self, request) -> str:
+    subject     = request.POST.get("subject")
+    start_date  = request.POST.get("start_date")
+    end_date    = request.POST.get("end_date")
+    employees   = request.POST.get("employees") 
+    return subject, start_date, end_date, employees
+
+
   def post(self, request):
-    if (request.META.get("HTTP_X_CSRFTOKEN") != request.POST.get("csrftoken")):
+    if self.checkHTTPRequest(request):
       return JsonResponse({"errMsg": "Invalid request"})
-    print("You hit save button through your template")
+
+    subject, start_date, end_date, employees = self.getFormData(request)
+    print(subject, start_date, end_date, employees)
     return JsonResponse({"msg": "success"})
+
+  

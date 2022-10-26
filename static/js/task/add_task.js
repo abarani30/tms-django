@@ -17,6 +17,11 @@ if (taskForm !== null) {
 
         const formData = new FormData();
         formData.append('csrftoken', csrf[0].value);
+        formData.append("subject", taskSubject.value);
+        formData.append("start_date", startDate.value);
+        formData.append("end_date", endDate.value);
+        formData.append("employees", employees);
+
 
         $.ajax({
             url: '/tasks/systems/',
