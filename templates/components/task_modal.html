@@ -6,33 +6,52 @@
           <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST">
-            <div class="mb-3">
-              <label class="form-label fw-bold">عنوان المهمة</label>
-              <textarea class="form-control" rows="3"
-                placeholder="تصميم موقع خاص بقسم الحاسبة الالكترونية"></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-bold">من</label>
-              <div class="input-group date" id="datepicker1">
-                <input type="text" class="form-control" placeholder="ادخل تاريخ البدء">
-                <span class="input-group-append">
-                  <span class="input-group-text w-100">
-                    <i class="fa fa-calendar"></i>
-                  </span>
-                </span>
+          <form class="row g-3 needs-validation" id="task-form" novalidate>
+            {% csrf_token %}
+           
+            <div class="col-md-12">
+              <label class="form-label fw-bold">الموضوع:</label>
+              <div class="input-group has-validation">
+                <textarea class="form-control" id="task-subject" rows="3" placeholder="اكتب موضوع المهمه هنا" required></textarea>
+                <div class="invalid-feedback">
+                  يرجى ذكر الموضوع
+                </div>
               </div>
             </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-bold">من</label>
+              <div class="input-group date" id="datepicker1">
+                <div class="input-group has-validation">
+                  <input type="text" class="form-control" id="start-date" placeholder="ادخل تاريخ البدء" required>
+                  <span class="input-group-append">
+                    <span class="input-group-text w-100">
+                      <i class="fa fa-calendar"></i>
+                    </span>
+                  </span>
+                  <div class="invalid-feedback">
+                    يرجى كتابة تاريخ البداية
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="mb-3">
               <label class="form-label fw-bold">الى</label>
               <div class="input-group date" id="datepicker2">
-                <input type="text" class="form-control" placeholder="ادخل تاريخ الانتهاء">
-                <span class="input-group-append">
-                  <span class="input-group-text w-100">
-                    <i class="fa fa-calendar"></i>
+                <div class="input-group has-validation"></div>
+                  <input type="text" class="form-control" id="end-date" placeholder="ادخل تاريخ الانتهاء" required>
+                  <span class="input-group-append">
+                    <span class="input-group-text w-100">
+                      <i class="fa fa-calendar"></i>
+                    </span>
                   </span>
-                </span>
+                  <div class="invalid-feedback">
+                    يرجى كتابة تاريخ النهاية
+                  </div>
+                </div>
               </div>
+            
 
               <div class="col-md-12 mb-3 mt-4">
                 <label class="form-label fw-bold">الموظفين:</label>
@@ -40,7 +59,7 @@
                  {% for employee in employees %}
                   {% if not employee.is_staff %}
                   <div class="d-flex ms-3">
-                    <input class="form-check-input me-1" type="checkbox" value="{{u.username}}" id="employees">
+                    <input class="form-check-input me-1" type="checkbox" value="{{employee.username}}" id="employees">
                     <label class="form-check-label me-2" for="flexCheckDefault">
                       {{employee.username}}
                     </label>
@@ -49,13 +68,11 @@
                  {% endfor %}
                 </div>
               </div>
-
-            </div>
-          </form>
+              <div class="modal-footer">
+                <button class="btn btn-primary">حفظ</button>
+              </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary">حفظ</button>
-        </div>
-      </div>
     </div>
+  </div>
 </div>

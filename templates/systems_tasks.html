@@ -198,7 +198,9 @@
     </div>
 
     <!--Task Modal-->
-    {% include "components/task_modal.html" %}
+    {% if user.is_staff %}
+      {% include "components/task_modal.html" %}
+    {% endif %}
     <!---->
 
   </main>

@@ -48,12 +48,13 @@
     </div>
 
     <div class="container-fluid mt-3">
+      
       <div class="row px-1">
         <u class="fw-bold">مخطط المهام:</u>
       </div>
 
       <div class="row mt-3">
-        {% if user.profile.division == "الانظمة" %}
+        {% if user.is_superuser %}
         <div class="col-md-6">
           <div class="card">
             <div class="card-header fw-bold">شعبة الانظمة</div>
@@ -62,8 +63,6 @@
             </div>
           </div>
         </div>
-        {% endif %}
-        {% if user.profile.division == "الفنية" %}
         <div class="col-md-6">
           <div class="card">
             <div class="card-header fw-bold">الشعبة الفنية</div>
@@ -72,8 +71,30 @@
             </div>
           </div>
         </div>
+        {% else %}
+          {% if user.profile.division == "الانظمة" %}
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header fw-bold">شعبة الانظمة</div>
+              <div class="card-body">
+                <canvas class="chart"></canvas>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% if user.profile.division == "الفنية" %}
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header fw-bold">الشعبة الفنية</div>
+              <div class="card-body">
+                <canvas class="chart"></canvas>
+              </div>
+            </div>
+          </div>
+          {% endif %}
         {% endif %}
       </div>
+
     </div>
 
     {% if user.is_superuser %}
