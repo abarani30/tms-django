@@ -19,41 +19,45 @@
               </div>
             </div>
 
-            <div class="col-md-12">
-              <label class="form-label fw-bold">من</label>
-              <div class="input-group date" id="datepicker1">
-                <div class="input-group has-validation">
-                  <input type="text" class="form-control" id="start-date" placeholder="ادخل تاريخ البدء" required>
-                  <span class="input-group-append">
-                    <span class="input-group-text w-100">
-                      <i class="fa fa-calendar"></i>
-                    </span>
-                  </span>
-                  <div class="invalid-feedback">
-                    يرجى كتابة تاريخ البداية
+              <div class="col-md-12 mt-2">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">من</label>
+                    <div class="input-group date" id="datepicker1">
+                      <div class="input-group has-validation">
+                        <input type="text" class="form-control" id="start-date" placeholder="ادخل تاريخ البدء" required>
+                        <span class="input-group-append">
+                          <span class="input-group-text w-100">
+                            <i class="fa fa-calendar"></i>
+                          </span>
+                        </span>
+                        <div class="invalid-feedback">
+                          يرجى كتابة تاريخ البداية
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">الى</label>
+                    <div class="input-group date" id="datepicker2">
+                      <div class="input-group has-validation"></div>
+                        <input type="text" class="form-control" id="end-date" placeholder="ادخل تاريخ الانتهاء" required>
+                        <span class="input-group-append">
+                          <span class="input-group-text w-100">
+                            <i class="fa fa-calendar"></i>
+                          </span>
+                        </span>
+                        <div class="invalid-feedback">
+                          يرجى كتابة تاريخ النهاية
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-bold">الى</label>
-              <div class="input-group date" id="datepicker2">
-                <div class="input-group has-validation"></div>
-                  <input type="text" class="form-control" id="end-date" placeholder="ادخل تاريخ الانتهاء" required>
-                  <span class="input-group-append">
-                    <span class="input-group-text w-100">
-                      <i class="fa fa-calendar"></i>
-                    </span>
-                  </span>
-                  <div class="invalid-feedback">
-                    يرجى كتابة تاريخ النهاية
-                  </div>
-                </div>
-              </div>
-            
-
-              <div class="col-md-12 mb-3 mt-4">
+              <div class="col-md-12 mb-3 mt-2 px-3">
                 <label class="form-label fw-bold">الموظفين:</label>
                 <div class="input-group d-flex">
                  {% for employee in employees %}
