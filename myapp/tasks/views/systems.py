@@ -4,6 +4,9 @@ from django.views import View
 from django.contrib.auth.models import User
 from myapp.models import Task
 import datetime 
+import os, sys
+sys.path.append(os.path.abspath(os.path.join('..', 'utils')))
+from utils.task_validation import TaskInputs
 
 class SystemTasksView(View):
   template_name = "systems_tasks.html"
@@ -61,7 +64,9 @@ class SystemTasksView(View):
       return JsonResponse({"errMsg": "Invalid request"})
 
     subject, start_date, end_date, employees = self.getFormData(request)
-    print(subject, start_date, end_date, employees)
+    valid: bool = TaskInputs(subject, start_date, end_date, employees).Validate()
+    
+    print(valid)
     return JsonResponse({"msg": "success"})
 
   
