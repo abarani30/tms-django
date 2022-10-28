@@ -4,6 +4,8 @@ var taskSubject     = document.getElementById("task-subject");
 var startDate       = document.getElementById("start-date");
 var endDate         = document.getElementById("end-date");
 var taskEmployees   = document.querySelectorAll("input[id='employees']");
+var toastDiv        = document.querySelector(".toast");
+var toastMsg        = document.querySelector(".toast-body");
 var start_date, end_date;
 
 if (taskForm !== null) {
@@ -19,15 +21,6 @@ if (taskForm !== null) {
             
             start_date  = changeDateFormat(startDate.value);
             end_date    = changeDateFormat(endDate.value);
-            console.log(start_date, end_date);
-
-            const formData = new FormData();
-            
-            formData.append('csrftoken', csrf[0].value);
-            formData.append("subject", taskSubject.value);
-            formData.append("start_date", start_date);
-            formData.append("end_date", end_date);
-            formData.append("employees", JSON.stringify(employees));
 
             $.ajax({
                 url: '/tasks/systems/',
@@ -38,9 +31,16 @@ if (taskForm !== null) {
                     "X-CSRFToken": csrf[0].value,  
                 },
                 mode: "same-origin",
-                data: formData,
+                data: getFormData(csrf, taskSubject, start_date, end_date, employees),
                 success:(response) => {
-                    console.log(response);
+                    if (response["errMsg"]) displayError(response["errMsg"]);
+                    else {
+                        displayResponse(response["msg"]);
+                        setTimeout(() => {
+                            $(".modal").modal('hide');
+                        }, 4000);
+                        window.location.reload();
+                    }
                 },
                 cache: false,
                 contentType: false,
@@ -56,4 +56,30 @@ function changeDateFormat(currentDate) {
     mnth      = ("0" + (date.getMonth() + 1)).slice(-2),
     day       = ("0" + date.getDate()).slice(-2);
     return [date.getFullYear(), mnth, day].join("-")
+}
+
+function getFormData(csrf, subject, start_date, end_date, employees) {
+    const formData = new FormData();
+    formData.append('csrftoken', csrf[0].value);
+    formData.append("subject", subject.value);
+    formData.append("start_date", start_date);
+    formData.append("end_date", end_date);
+    formData.append("employees", JSON.stringify(employees));
+    return formData;
+}
+
+function displayError(msg) {
+    $(".toast").toast('show');
+    toastDiv.classList.add("bg-success");
+    toastDiv.classList.add("bg-danger");
+    toastDiv.classList.add("text-white");
+    toastMsg.innerHTML= msg;
+}
+
+function displayResponse(msg) {
+    $(".toast").toast('show');
+    toastDiv.classList.remove("bg-danger");
+    toastDiv.classList.add("bg-success");
+    toastDiv.classList.add("text-white");
+    toastMsg.innerHTML= msg;
 }

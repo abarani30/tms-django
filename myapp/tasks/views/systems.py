@@ -2,14 +2,17 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.models import User
-from myapp.models import Task
-import datetime 
-import os, sys
-sys.path.append(os.path.abspath(os.path.join('..', 'utils')))
-from utils.task_validation import TaskInputs
+from myapp.models import Task, Notification
+from typing import List
+from redmail import outlook
 
 class SystemTasksView(View):
-  template_name = "systems_tasks.html"
+  template_name: str = "systems_tasks.html"
+  employeesList: List[dict] = []
+  task: List[dict] = []
+  notification: List[dict] = []
+
+  # =============== GET request will be handled below ======== */
   
   def get(self, request):
     return render(request, self.template_name, 
@@ -18,20 +21,44 @@ class SystemTasksView(View):
       "tasks": self.getAllTasks()
     }
     )
+  
+  # ==================== End of get method ==================== */
+
+  # =============== POST request will be handled below ======== */
+
+  def post(self, request):
+    if self.checkHTTPRequest(request):
+      return JsonResponse({"errMsg": "لا يمكن ارسال هذا الطلب للخادم"})
+
+    subject, start_date, end_date, employees = self.getFormData(request)
+    if not self.valideTaskInputs(subject, start_date, end_date, employees):  
+      return JsonResponse({"errMsg": "لا يمكن تنفيذ طلبك"})
+    
+    start_day: str      = self.getDay(start_date)
+    end_day: str        = self.getDay(end_date) 
+    self.employeesList  = self.isEmployee(employees)
+    self.task           = self.createTask(subject, start_date, end_date, start_day, end_day)
+    self.notification   = self.createNotification(subject)
+    self.AssignAndNotify(self.task, self.notification)
+    self.sendEmail(subject)
+    
+    return JsonResponse({"msg": "تم تخصيص المهمه بنجاح"})
+  
+  # ==================== End of post method ==================== */
 
   # get all the active users 
-  def getAllUsers(self):
+  def getAllUsers(self) -> List[dict]:
     return [
       user for user in User.objects.all().select_related("profile") 
       if user.profile.division == "الانظمة" and user.is_active
     ]
 
   # get all the tasks in the current month 
-  def getAllTasks(self):
+  def getAllTasks(self) -> List[dict]:
     return [
       task 
       for task in Task.objects.prefetch_related("employees")
-      .filter(start_date__range=(self.getFirstDayOfMonth(), self.getLastDayOfMonth()))
+      .filter(start_date__range = (self.getFirstDayOfMonth(), self.getLastDayOfMonth()))
       .order_by("-created_at") 
       if task.user.profile.division == "الانظمة" 
     ]
@@ -55,18 +82,71 @@ class SystemTasksView(View):
     subject     = request.POST.get("subject")
     start_date  = request.POST.get("start_date")
     end_date    = request.POST.get("end_date")
-    employees   = request.POST.get("employees") 
+    employees   = ast.literal_eval(request.POST.get("employees"))
     return subject, start_date, end_date, employees
 
+  # used to validate the task inputs
+  def valideTaskInputs(self, subject, start_date, end_date, employees) -> bool:
+    return bool(
+      subject and 
+      start_date and 
+      end_date and 
+      self.compareDates(start_date, end_date) and 
+      len(employees) != 0 and 
+      len(self.isEmployee(employees)) == len(employees)
+    )
 
-  def post(self, request):
-    if self.checkHTTPRequest(request):
-      return JsonResponse({"errMsg": "Invalid request"})
+  # used to compare both the start_date and end_date
+  def compareDates(self, start_date, end_date) -> bool:
+    return start_date <= end_date
 
-    subject, start_date, end_date, employees = self.getFormData(request)
-    valid: bool = TaskInputs(subject, start_date, end_date, employees).Validate()
-    
-    print(valid)
-    return JsonResponse({"msg": "success"})
-
+  # used to get the day from the current date
+  def getDay(self, currentDate) -> str:
+    year, month, day = (int(x) for x in currentDate.split('-'))    
+    return self.convertDayName((datetime.date(year, month, day)).strftime("%A"))
   
+  # used to convert the day name from english to arabic
+  def convertDayName(self, day) -> str:
+    week: Dict[str] = {
+      "Sunday": "الاحد", "Monday": "الاثنين", "Tuesday": "الثلاثاء",
+      "Wednesday": "الاربعاء", "Thursday": "الخميس", "Friday": "الجمعه", 
+      "Saturday": "السبت"
+    }
+    return week[day]
+
+  # used to check if the username exists or not
+  def isEmployee(self, employees) -> List[dict]:
+    return [
+      User.objects.get(username=employee) for employee in employees
+      if User.objects.filter(username=employee).exists()
+    ]
+
+  # used to create and save a new task
+  def createTask(self, subject, start_date, end_date, start_day, end_day) -> List[dict]:
+    return Task.objects.create(
+      user        = self.request.user , subject   = subject,
+      start_date  = start_date        , end_date  = end_date,
+      start_day   = start_day         , end_day   = end_day,
+      no_of_users = len(self.employeesList)
+    )
+
+  # used to create and save a new notification
+  def createNotification(self, subject) -> List[dict]:
+    return Notification.objects.create(user = self.request.user, message = subject)
+  
+  # used to assign the task and send notification to each employee 
+  def AssignAndNotify(self, task, notification) -> any:
+    for employee in self.employeesList:
+      task.employees.add(employee)
+      notification.emps.add(employee)
+
+  # used to send emails for each employee
+  def sendEmail(self, subject) -> any:
+    for employee in self.employeesList:
+      outlook.username = self.request.user.email
+      outlook.password = "prestige1"
+      outlook.send(
+        receivers=[employee.email],
+        subject=f"{subject} {uuid.uuid4()}",
+        html=f"<b>{subject}</b><br>يرجى النقر على <b>استلمت</b> في حال تم استلامك لهذه المهمه",
+      )

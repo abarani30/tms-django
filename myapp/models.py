@@ -29,10 +29,6 @@ class Profile(models.Model):
     def getAllEmployees(self):  # sourcery skip: simplify-generator
         return User.objects.all().count()
 
-    # check if the user is exists or not
-    def isUser(self, request):
-        return bool(User.objects.filter(pk=request.user.id).exists())
-
 
 # link the current profile with the existing user
 @receiver(post_save, sender=User)
