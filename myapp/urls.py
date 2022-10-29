@@ -16,5 +16,5 @@ urlpatterns = [
   path("employees/maintenance/", login_required(MaintenanceEmployeesView.as_view()), name="maintenance_employees_page" ),
   path("tasks/systems/", login_required(SystemTasksView.as_view()), name="systems_tasks_page"),
   path("tasks/director/", DirectorTasksView, name="director_tasks_page"),
-  path("notifications/", NotificationsView, name="notifications_page")
+  path("notifications/", login_required(NotificationsView.as_view()), name="notifications_page")
 ]

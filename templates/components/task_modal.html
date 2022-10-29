@@ -63,7 +63,7 @@
                  {% for employee in employees %}
                   {% if not employee.is_staff %}
                   <div class="d-flex ms-3">
-                    <input class="form-check-input me-1" type="checkbox" value="{{employee.username}}" id="employees">
+                    <input class="form-check-input me-1" type="checkbox" value="{{employee.username}}" id="checkbox-employees">
                     <label class="form-check-label me-2" for="flexCheckDefault">
                       {{employee.username}}
                     </label>

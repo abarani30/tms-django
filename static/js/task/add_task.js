@@ -3,9 +3,10 @@ var csrf            = document.getElementsByName("csrfmiddlewaretoken");
 var taskSubject     = document.getElementById("task-subject");
 var startDate       = document.getElementById("start-date");
 var endDate         = document.getElementById("end-date");
-var taskEmployees   = document.querySelectorAll("input[id='employees']");
+var taskEmployees   = document.querySelectorAll("input[id='checkbox-employees']");
 var toastDiv        = document.querySelector(".toast");
 var toastMsg        = document.querySelector(".toast-body");
+var tasksBody       = document.querySelector(".tasks-body");
 var start_date, end_date;
 
 if (taskForm !== null) {
@@ -38,8 +39,8 @@ if (taskForm !== null) {
                         displayResponse(response["msg"]);
                         setTimeout(() => {
                             $(".modal").modal('hide');
+                            window.location.reload();
                         }, 4000);
-                        window.location.reload();
                     }
                 },
                 cache: false,

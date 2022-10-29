@@ -54,6 +54,15 @@ class Task(models.Model):
       ("منجزة", "منجزة")
     ]
     status      = models.CharField(max_length=100, choices=TASK_STATUS, default="غير منجزة")
+    TASK_RATE = [
+      (20, 20),
+      (40, 40),
+      (60, 60),
+      (80, 80),
+      (100, 100),
+    ]
+    rate        = models.CharField(max_length=100, choices=TASK_RATE, default=20)
+
     received    = models.BooleanField(default=False)
     created_at  = models.DateTimeField(auto_now_add=True)   
     
@@ -79,12 +88,12 @@ class Task(models.Model):
 
     # count the total tasks for the systems division
     def countSystemsTasks(self):
-        week = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
+        week: List[str] = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
         return [sum(task.start_day == day and task.user.profile.division == "الانظمة" and not task.user.is_superuser for task in Task.objects.all()) for day in week]
     
     # count the total tasks for the systems division
     def countMaintenanceTasks(self):
-        week = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
+        week: List[str] = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس"]
         return [sum(task.start_day == day and task.user.profile.division == "الفنية" and not task.user.is_superuser for task in Task.objects.all()) for day in week]
 
 # Notification table
@@ -98,13 +107,21 @@ class Notification(models.Model):
     def __str__(self):
         return self.message 
 
-    # get the total unreadable notifications for the current user 
-    def getUnreadableNotifications(self, request):
+    # count the total unreadable notifications for the current user 
+    def countUnreadableNotifications(self, request):
         return sum(
             not notification.received and request.user in notification.emps.all()
             for notification in Notification.objects.all())
 
-    # get the total notifications (readable and unreadable) for the current user
-    def getTotalNotifications(self, request):
+    # count the total notifications (readable and unreadable) for the current user
+    def countTotalNotifications(self, request):
         return sum(request.user in notification.emps.all()
             for notification in Notification.objects.all()) 
+
+    # get the total notifications for the current user 
+    def getUserNotifications(self, request):
+        return [
+            notification for notification in Notification.objects.all()
+            .order_by("-created_at")
+            if request.user in notification.emps.all()
+        ]

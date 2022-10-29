@@ -66,7 +66,11 @@
           <li class="nav-item">
             <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="/notifications/">
               الاشعارات
-              <span class="badge bg-danger">3</span>
+              {% if unreadable != 0 %}
+              <span class="badge bg-danger">
+                {{unreadable}}
+              </span>
+              {% endif %}
             </a>
           </li>
 
@@ -79,7 +83,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="#profile">الملف الشخصي</a></li>
-              <li><a class="dropdown-item" href="#settings">الاعدادات</a></li>
+              <li><a class="dropdown-item" href="#settings">تغيير كلمة المرور</a></li>
               <li><a class="dropdown-item" href="/logout/">تسجيل الخروج</a></li>
             </ul>
           </li>
