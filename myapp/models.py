@@ -1,5 +1,6 @@
 from email.policy import default
 from random import choices
+from typing import List
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -64,6 +65,7 @@ class Task(models.Model):
     rate        = models.CharField(max_length=100, choices=TASK_RATE, default=20)
 
     received    = models.BooleanField(default=False)
+    active      = models.BooleanField(default=True)
     created_at  = models.DateTimeField(auto_now_add=True)   
     
     # display the tasks subject in the admin panel

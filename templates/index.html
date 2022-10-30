@@ -117,7 +117,7 @@
                     <b>{{emp}},</b>
                   {% endif %}
                 {% endfor %}
-                يوم {{task.start_day}}
+                منذ {{task.created_at | timesince}}
               </li>
             {% endfor %}
           </ul>

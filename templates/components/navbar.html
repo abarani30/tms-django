@@ -63,6 +63,7 @@
             <a class="nav-link" href="#history">السجل</a>
           </li>
           {% endif %}
+          {% if not user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="/notifications/">
               الاشعارات
@@ -73,7 +74,7 @@
               {% endif %}
             </a>
           </li>
-
+          {% endif %}
         </ul>
         <ul class="navbar-nav mb-2 mb-lg-0 me-auto">
           <li class="nav-item dropdown">

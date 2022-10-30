@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.models import User
 from myapp.models import Task, Notification
-from typing import List
+from typing import Dict, List
 from redmail import outlook
 import datetime, ast, uuid
 
@@ -24,7 +24,10 @@ class SystemTasksView(View):
     ):
       return JsonResponse({"msg": "success"})
     
-    if request.user.is_staff and self.getCurrentTask(request.GET.get("confirm_task")):
+    if request.user.is_staff and (
+      self.getCurrentTask(request.GET.get("confirm_task")) or
+      self.getCurrentTask(request.GET.get("delete_task"))
+    ):
       return JsonResponse({"msg": "success"})
 
     return render(request, self.template_name, 
@@ -74,7 +77,7 @@ class SystemTasksView(View):
       for task in Task.objects.prefetch_related("employees")
       .filter(start_date__range = (self.getFirstDayOfMonth(), self.getLastDayOfMonth()))
       .order_by("-created_at") 
-      if task.user.profile.division == "الانظمة" 
+      if task.user.profile.division == "الانظمة" and task.active
     ]
 
   # get the first day in a month
@@ -187,6 +190,8 @@ class SystemTasksView(View):
   
   # used to update the task status by staff (admin)
   def updateStatusByStaff(self, task):
+    if task and self.request.GET.get("delete_task"):
+      return self.deactivateTask(task[0])
     if task and task[0].status == "بأنتظار الموافقة":
       return self.finalTaskUpdate(task[0], "منجزة")
     return False
@@ -202,3 +207,11 @@ class SystemTasksView(View):
     task.status = status
     task.save()
     return True
+  
+  # used to deactivate (delete) the current task
+  def deactivateTask(self, task):
+    if task.status != "منجزة":
+      task.active = False
+      task.save()
+      return True
+    return False
