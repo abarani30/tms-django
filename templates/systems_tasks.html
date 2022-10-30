@@ -17,6 +17,26 @@
   <!--Systems Tasks Page-->
   <main class="mt-4 px-3" style="margin-top: 80px !important">
 
+    <center>
+      <div class="col-md-3">
+        {% for message in messages %}
+          {% if message and message.tags == "error" %}
+          <div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between p-2" id="alert_form"
+            role="alert">
+            <button type="button" style="margin-top: 5px;" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            <label style="font-size: 16px;">{{message}}</label>
+          </div>
+          {% else %}
+          <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between p-2" id="alert_form"
+            role="alert">
+            <button type="button" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{message}}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </center>
+
     <div class="row px-1 mb-3">
       <div class="col-md-3">
         <label class="fs-6 fw-bold px-1">ابحث:</label>
@@ -143,7 +163,7 @@
                 <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
                 <td style="display: none;">
                   {% if task.status == "غير منجزة"  %}
-                  <a href="#">تحديث</a>
+                  <a href="/tasks/systems/update/{{task.id}}">تحديث</a>
                   {% endif %}
                   {% if task.status == "بأنتظار الموافقة" %}
                   <a href="#" class="me-2" onclick="confirmTask(`{{task.id}}`)">تأكيد</a>

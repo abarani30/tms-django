@@ -6,13 +6,13 @@
           <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form class="row g-3 needs-validation" id="task-form" novalidate>
+          <form action="/tasks/systems/create/" method="post" class="row g-3 needs-validation" id="task-form" novalidate>
             {% csrf_token %}
            
             <div class="col-md-12">
               <label class="form-label fw-bold">الموضوع:</label>
               <div class="input-group has-validation">
-                <textarea class="form-control" id="task-subject" rows="3" placeholder="اكتب موضوع المهمه هنا" required></textarea>
+                <textarea class="form-control" name="task-subject" rows="3" placeholder="اكتب موضوع المهمه هنا" required></textarea>
                 <div class="invalid-feedback">
                   يرجى ذكر الموضوع
                 </div>
@@ -25,7 +25,7 @@
                     <label class="form-label fw-bold">من</label>
                     <div class="input-group date" id="datepicker1">
                       <div class="input-group has-validation">
-                        <input type="text" class="form-control" id="start-date" placeholder="ادخل تاريخ البدء" required>
+                        <input type="text" class="form-control" name="start-date" placeholder="ادخل تاريخ البدء" required>
                         <span class="input-group-append">
                           <span class="input-group-text w-100">
                             <i class="fa fa-calendar"></i>
@@ -42,7 +42,7 @@
                     <label class="form-label fw-bold">الى</label>
                     <div class="input-group date" id="datepicker2">
                       <div class="input-group has-validation"></div>
-                        <input type="text" class="form-control" id="end-date" placeholder="ادخل تاريخ الانتهاء" required>
+                        <input type="text" class="form-control" name="end-date" placeholder="ادخل تاريخ الانتهاء" required>
                         <span class="input-group-append">
                           <span class="input-group-text w-100">
                             <i class="fa fa-calendar"></i>
@@ -63,7 +63,7 @@
                  {% for employee in employees %}
                   {% if not employee.is_staff %}
                   <div class="d-flex ms-3">
-                    <input class="form-check-input me-1" type="checkbox" value="{{employee.username}}" id="checkbox-employees">
+                    <input class="form-check-input me-1" type="checkbox" value="{{employee.username}}" name="employees">
                     <label class="form-check-label me-2" for="flexCheckDefault">
                       {{employee.username}}
                     </label>
@@ -71,22 +71,8 @@
                   {% endif %}
                  {% endfor %}
               </div>
-
-              <center>
-                <div>
-                  <div class="toast mt-4 p-0 d-flex justify-content-center align-items-center text-secondary border-0" style="width: auto !important;" role="alert" aria-live="assertive"
-                    aria-atomic="true">
-                    <div class="d-flex">
-                      <div class="toast-body p-2 rounded">
-                        fdsfsfsdf
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </center>
-              
               <div class="modal-footer">
-                <button class="btn btn-primary">حفظ</button>
+                <input type="submit" name="addTaskBtn" class="btn btn-primary" value="حفظ">
               </div>
             </form>
         </div>
