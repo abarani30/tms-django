@@ -55,15 +55,7 @@ class Task(models.Model):
       ("منجزة", "منجزة")
     ]
     status      = models.CharField(max_length=100, choices=TASK_STATUS, default="غير منجزة")
-    TASK_RATE = [
-      (20, 20),
-      (40, 40),
-      (60, 60),
-      (80, 80),
-      (100, 100),
-    ]
-    rate        = models.CharField(max_length=100, choices=TASK_RATE, default=20)
-
+    rate        = models.SmallIntegerField(default=0)
     received    = models.BooleanField(default=False)
     active      = models.BooleanField(default=True)
     created_at  = models.DateTimeField(auto_now_add=True)   

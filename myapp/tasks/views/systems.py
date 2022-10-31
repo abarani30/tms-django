@@ -12,12 +12,9 @@ from django.template.response import SimpleTemplateResponse
 
 # get request
 def get_all(request) -> SimpleTemplateResponse:
-  tasks = get_all_tasks()
-  try:
-    if tasks:
-      return render(request, "systems_tasks.html", context = get_context(request, tasks))
-  except Exception as e:
-    return Http404(e.message)
+  if get_all_tasks() != []:
+    return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks()))
+  return render(request, "systems_tasks.html", context = default_context())
 
 
 
@@ -27,6 +24,16 @@ def get_context(request, tasks):
     "employees": get_all_users(),
     "tasks": tasks,
     "unreadable": tasks[0].unread_employee_tasks(request)
+  }
+
+
+
+# in case when there is no tasks to return
+def default_context():
+  return {
+    "employees": get_all_users(),
+    "tasks": "[]",
+    "unreadable": 0
   }
 
 
@@ -60,7 +67,7 @@ def receive_task(request, id) -> HttpResponseRedirect:
 def achieve_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and not request.user.is_staff:
     update_status_field(request, get_task(id)[0])
-    messages.success(request, f"{id} ﺗﻢ تحديث حالة اﻟﻤﻬﻤﺔ المرقمه")
+    messages.success(request, f"{id} ﺗﻢ انجاز اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
 
 
@@ -73,7 +80,8 @@ def confirm_task(request, id) -> HttpResponseRedirect:
   return HttpResponseRedirect('/tasks/systems/')
 
 
-# confirm the task 
+
+# delete the task 
 def delete_task(request, id) -> HttpResponseRedirect:
   if id and get_task(id) and request.user.is_staff:
     decactivate_task(get_task(id)[0])
@@ -82,10 +90,20 @@ def delete_task(request, id) -> HttpResponseRedirect:
 
 
 
+# assign a rate to the task 
+def rate_task(request, id) -> HttpResponseRedirect:
+  if request.method == "POST" and id and get_task(id) and request.user.is_staff:
+    rate(get_task(id)[0], request.POST.get("task-rate"))
+    messages.success(request, f"{id} ﺗﻢ تقييم اﻟﻤﻬﻤﺔ المرقمه")
+  return HttpResponseRedirect('/tasks/systems/')
+
+
+
 # update the current task received
 def update_received_field(task):
-  task.received = True
-  task.save()
+  if not task.received:
+    task.received = True
+    task.save()
 
 
 
@@ -99,8 +117,17 @@ def update_status_field(request, task) -> bool:
 
 # deactivate the current task
 def decactivate_task(task):
-  task.active = False
-  task.save()
+  if task.active:
+    task.active = False
+    task.save()
+
+
+
+# update the current rate field
+def rate(task, rate_value):
+  if task.rate == 0 and task.status == "منجزة":
+    task.rate = rate_value
+    task.save()
 
 
 
@@ -116,7 +143,7 @@ def get_all_users() -> List[dict]:
 # get all the tasks in the current month 
 def get_all_tasks() -> List[dict]:
   return [
-    task for task in get_current_month()[0]
+    task for task in get_month_tasks()[0]
     if task.user.profile.division == "الانظمة" and task.active
   ]
 
@@ -125,7 +152,7 @@ def get_all_tasks() -> List[dict]:
 # get all the employee tasks 
 def get_employee_tasks(request) -> List[dict]:
   return [
-    task for task in get_current_month()[0]
+    task for task in get_month_tasks()[0]
     if request.user in task.employees.all() and 
     not task.received and task.active
   ]
@@ -133,22 +160,36 @@ def get_employee_tasks(request) -> List[dict]:
 
 
 # get the current month tasks
-def get_current_month() -> List[dict]:
+def get_month_tasks() -> List[dict]:
   return [Task.objects.prefetch_related("employees")
     .filter(start_date__range = (get_first_day(), get_last_day()))
     .order_by("-created_at")]
 
 
 
+# get the month
+def get_month() -> int:
+  return datetime.datetime.now().month
+
+
+
+# get the year
+def get_year() -> int:
+  return datetime.datetime.now().year
+
+
+
 # get the first day in a month
 def get_first_day() -> str:
-  return str(datetime.date.today().replace(day=1))
+  return str(datetime.datetime(get_year(), get_month(), 1).date())
 
 
 
 # get the last day in a month
 def get_last_day() -> str:
-  return str(datetime.date.today().replace(day=31))
+  if get_month() == 12:
+    return str(datetime.datetime(get_year(), get_month(), 31).date())
+  return str((datetime.datetime(get_year(), get_month() + 1, 1) + datetime.timedelta(days=-1)).date())
 
 
 

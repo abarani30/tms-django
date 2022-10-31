@@ -29,7 +29,7 @@
           {% else %}
           <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between p-2" id="alert_form"
             role="alert">
-            <button type="button" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" style="margin-top: 5px;" class="alert-close ms-1" data-bs-dismiss="alert" aria-label="Close"></button>
             {{message}}
           </div>
           {% endif %}
@@ -85,6 +85,7 @@
     {% endif %}
 
     <div class="row px-1">
+      {% if tasks != "[]" %}
       <div class="table-responsive">
         <table class="table tasks-table" id="task-table" style="width:100%">
           <thead>
@@ -100,7 +101,7 @@
               <th>اﺳﺘﻠﻤﺖ</th>
               <th>اﻟﺤﺎﻟﺔ</th>
               {% if user.is_staff %}
-              <th span="0">ﺗﻌﺪﻳﻞ</th>
+              <th span="0">تفعيل</th>
               {% endif %}
               <th></th>
             </tr>
@@ -136,13 +137,45 @@
                 </td>
                 {% endif %}
                 <td>
-                  <select disabled="true" class="task-rate">
-                    <option value="20">20</option>
-                    <option value="40">40</option>
-                    <option value="60">60</option>
-                    <option value="80">80</option>
-                    <option value="100">100</option>
-                  </select>
+                  {% if task.rate != 0 and task.status == "منجزة" %}
+                    {% if task.rate < 50 %}
+                    <div class="progress mt-1 me-0">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width:{{task.rate}}%">
+                        {{task.rate}}%
+                      </div>
+                    </div>
+                    {% else %}
+                    <div class="progress mt-1 me-0">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width:{{task.rate}}%">
+                        {{task.rate}}%
+                      </div>
+                    </div>
+                    {% endif %}
+                  {% endif %}
+                  <form action="/tasks/systems/rate/{{task.id}}" method="post">
+                    {% csrf_token %} 
+                    {% if task.rate == 0 and task.status == "منجزة" %}
+                    <select class="task-rate" name="task-rate">
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="60">60</option>
+                      <option value="80">80</option>
+                      <option value="100">100</option>
+                    </select>
+                    {% endif %}
+                    {% if task.rate == 0 and task.status != "منجزة" %}
+                    <select class="task-rate" name="task-rate" disabled="true">
+                      <option value="20">20</option>
+                      <option value="40">40</option>
+                      <option value="60">60</option>
+                      <option value="80">80</option>
+                      <option value="100">100</option>
+                    </select>
+                    {% endif %}
+                    {% if task.rate == 0 and  task.status == "منجزة" %}
+                    <input type="submit" value="تقييم" class="btn btn-success btn-sm" style="margin-top: -4px; margin-right: 5px">
+                    {% endif %}
+                  </form>
                 </td>
                 <td>
                   {% if task.received %}
@@ -158,9 +191,11 @@
                 <td class="fw-bold text-danger">{{task.status}}</td>
                 {% endif %}
                 {% if task.status == "بأنتظار الموافقة" %}
-                <td class="fw-bold text-warning">{{task.status}}</td>
+                <td class="fw-bold text-success">{{task.status}}</td>
                 {% endif %}
+                {% if task.status != "منجزة" %}
                 <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
+                {% endif %}
                 <td style="display: none;">
                   {% if task.status == "غير منجزة"  %}
                   <a href="/tasks/systems/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
@@ -168,10 +203,9 @@
                   {% if task.status == "بأنتظار الموافقة" %}
                   <a href="/tasks/systems/confirm/{{task.id}}" class="me-2">تأكيد</a>
                   {% endif %}
-                  {% if task.status == "منجزة" %}
-                  <a href="#" class="me-2" onclick="evaluateTask(`{{task.id}}`)">تقييم</a>
-                  {% endif %}
+                  {% if task.status == "غير منجزة" %}
                   <a href="/tasks/systems/delete/{{task.id}}" class="me-2">حذف</a>
+                  {% endif %}
                 </td>
               </tr>
               <!-- when you're a normal user -->
@@ -210,7 +244,7 @@
                   <td class="fw-bold text-danger">{{task.status}}</td>
                   {% endif %}
                   {% if task.status == "بأنتظار الموافقة" %}
-                  <td class="fw-bold text-warning">{{task.status}}</td>
+                  <td class="fw-bold text-success">{{task.status}}</td>
                   {% endif %}
                   <td>
                     {% if not task.received %}
@@ -227,6 +261,9 @@
           </tbody>
         </table>
       </div>
+      {% else %}
+      <p>لا توجد مهام حالياً</p>
+      {% endif %}
     </div>
 
     <!--Task Modal-->

@@ -3,7 +3,9 @@ from .views import HomePageView
 from .employees.views.systems import SystemsEmployeesView
 from .employees.views.maintenance import MaintenanceEmployeesView
 from .tasks.views.director import DirectorTasksView
-from .tasks.views.systems import get_all, create_task, receive_task, achieve_task, confirm_task, delete_task
+from .tasks.views.systems import (
+  get_all, create_task, receive_task, achieve_task, confirm_task, delete_task, rate_task
+)
 from .notifications.views.notifications import get_all_notifications
 from .auth import auth
 from django.contrib.auth.decorators import login_required
@@ -20,6 +22,7 @@ urlpatterns = [
   path("tasks/systems/achieve/<int:id>", login_required(achieve_task)),
   path("tasks/systems/confirm/<int:id>", login_required(confirm_task)),
   path("tasks/systems/delete/<int:id>", login_required(delete_task)),
+  path("tasks/systems/rate/<int:id>", login_required(rate_task)),
   path("tasks/director/", DirectorTasksView, name="director_tasks_page"),
   path("notifications/", login_required(get_all_notifications), name="notifications_page")
 ]
