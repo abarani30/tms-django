@@ -3,8 +3,8 @@ from .views import HomePageView
 from .employees.views.systems import SystemsEmployeesView
 from .employees.views.maintenance import MaintenanceEmployeesView
 from .tasks.views.director import DirectorTasksView
-from .tasks.views.systems import get_all, create_task, update_task
-from .notifications.views.notifications import NotificationsView
+from .tasks.views.systems import get_all, create_task, receive_task
+from .notifications.views.notifications import get_all_notifications
 from .auth import auth
 from django.contrib.auth.decorators import login_required
 
@@ -16,7 +16,7 @@ urlpatterns = [
   path("employees/maintenance/", login_required(MaintenanceEmployeesView.as_view()), name="maintenance_employees_page" ),
   path("tasks/systems/", login_required(get_all), name="systems_tasks_page"),
   path("tasks/systems/create/", login_required(create_task), name="systems_tasks_page"),
-  path("tasks/systems/update/<int:id>", login_required(update_task)),
+  path("tasks/systems/receive/<int:id>", login_required(receive_task)),
   path("tasks/director/", DirectorTasksView, name="director_tasks_page"),
-  path("notifications/", login_required(NotificationsView.as_view()), name="notifications_page")
+  path("notifications/", login_required(get_all_notifications), name="notifications_page")
 ]

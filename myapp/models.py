@@ -27,7 +27,7 @@ class Profile(models.Model):
         return self.user.username
 
     # get the total number of users (employees)
-    def getAllEmployees(self):  # sourcery skip: simplify-generator
+    def get_all_employees(self):  # sourcery skip: simplify-generator
         return User.objects.all().count()
 
 
@@ -72,20 +72,39 @@ class Task(models.Model):
     def __str__(self):
       return self.subject
 
+    # get the total notifications for the current user 
+    def get_employee_tasks (self, request):
+        return [
+            notification for notification in Notification.objects.all()
+            .order_by("-created_at")
+            if request.user in notification.emps.all()
+        ]
+    
+    # count the total notifications for the current user
+    def total_employee_tasks(self, request):
+        return sum(request.user in task.employees.all()
+            for task in Task.objects.all()) 
+
+    # count the total unreadable notifications for the current user 
+    def unread_employee_tasks(self, request):
+        return sum(
+            not task.received and request.user in task.employees.all()
+            for task in Task.objects.all())
+
     # count the total tasks (tasks created by staff members)
-    def countStaffTasks(self):
+    def total_staff_tasks(self):
         return sum(not task.user.is_superuser for task in Task.objects.all())
     
     # count the total tasks (tasks acheived by users)
-    def countAcheivedTasks(self):
+    def total_achieved_tasks(self):
         return sum(task.status == "منجزة" and not task.user.is_superuser for task in Task.objects.all())
     
     # count the total tasks (tasks not acheived by users)
-    def countNotAcheivedTasks(self):
+    def total_unachieved_tasks(self):
         return sum(task.status == "غير منجزة" and not task.user.is_superuser for task in Task.objects.all())
 
     # get the last three tasks (tasks created by staff members)
-    def getLastThree(self):
+    def get_last_three(self):
         return Task.objects.prefetch_related("employees").order_by("-created_at")[:3]
 
     # count the total tasks for the systems division
@@ -109,21 +128,6 @@ class Notification(models.Model):
     def __str__(self):
         return self.message 
 
-    # count the total unreadable notifications for the current user 
-    def countUnreadableNotifications(self, request):
-        return sum(
-            not notification.received and request.user in notification.emps.all()
-            for notification in Notification.objects.all())
+    
 
-    # count the total notifications (readable and unreadable) for the current user
-    def countTotalNotifications(self, request):
-        return sum(request.user in notification.emps.all()
-            for notification in Notification.objects.all()) 
-
-    # get the total notifications for the current user 
-    def getUserNotifications(self, request):
-        return [
-            notification for notification in Notification.objects.all()
-            .order_by("-created_at")
-            if request.user in notification.emps.all()
-        ]
+    

@@ -4,7 +4,7 @@ function filterTasks() {
   
   var table, tr, statusColumn, i, statusValue, employeesColumn, employees, isEmpty = 0;
 
-  table = document.getElementById("task-table");
+  table = document.querySelector(".task-table");
   tr    = table.getElementsByTagName("tr");
 
   for (i = 0; i < tr.length; i++) {

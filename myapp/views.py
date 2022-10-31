@@ -8,11 +8,10 @@ class HomePageView(View):
   def get(self, request):
     profile = Profile.objects.all()
     task    = Task.objects.prefetch_related("employees")
-    notification = Notification.objects.prefetch_related("emps")
     return render(request, self.template_name, 
       {
         "profile": profile[0],
         "task": task[0],
-        "unreadable": notification[0].countUnreadableNotifications(request)
+        "unreadable": task[0].unread_employee_tasks(request)
       }
     )

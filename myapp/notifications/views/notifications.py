@@ -1,16 +1,16 @@
-from django.shortcuts import render
-from django.views import View
-from myapp.models import Notification
+from django.shortcuts import HttpResponseRedirect, render
+from myapp.models import Task
+import datetime
+from typing import List
 
-class NotificationsView(View):
-  template_name = "notifications.html"
-
-  def get(self, request):
-    notification = Notification.objects.prefetch_related("emps")
-    return render(request, self.template_name, 
+def get_all_notifications(request):
+  task = Task.objects.prefetch_related("employees")
+  if task:
+    return render(request, "notifications.html", 
       { 
-        "total": notification[0].countTotalNotifications(request),
-        "unreadable": notification[0].countUnreadableNotifications(request),
-        "all_notifications": notification[0].getUserNotifications(request)
+        "total": task[0].total_employee_tasks(request),
+        "unreadable": task[0].unread_employee_tasks(request),
+        "all_notifications": task[0].get_employee_tasks
       }
     )
+  return HttpResponseRedirect("/notifications/")

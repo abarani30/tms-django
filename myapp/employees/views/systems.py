@@ -1,17 +1,17 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.models import User
-from myapp.models import Notification
+from myapp.models import Task
 
 class SystemsEmployeesView(View):
   template_name = "systems_employees.html"
 
   def get(self, request):
-    notification = Notification.objects.prefetch_related("emps")
+    task = Task.objects.prefetch_related("employees")
     return render(request, self.template_name, 
       {
         "employees": self.getAllUsers(),
-        "unreadable": notification[0].countUnreadableNotifications(request)
+        "unreadable": task[0].unread_employee_tasks(request)
       }
     )
 
