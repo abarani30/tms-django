@@ -1,4 +1,5 @@
-from django.http import Http404
+from re import T, U
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from myapp.models import Task
@@ -46,13 +47,46 @@ def create_task(request) -> HttpResponseRedirect:
 
 
 
-# update the task 
+# receive the task 
 def receive_task(request, id) -> HttpResponseRedirect:
-  if id and get_task(id):
-    get_task(id)[0].received = True
-    get_task(id)[0].save()
+  if id and get_task(id) and not request.user.is_staff:
+    update_received_field(get_task(id)[0])
     messages.success(request, f"{id} ﺗﻢ استلام اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
+  
+  
+
+# achieve the task (task completion) 
+def achieve_task(request, id) -> HttpResponseRedirect:
+  if id and get_task(id) and not request.user.is_staff:
+    update_status_field(request, get_task(id)[0])
+    messages.success(request, f"{id} ﺗﻢ تحديث حالة اﻟﻤﻬﻤﺔ المرقمه")
+  return HttpResponseRedirect('/tasks/systems/')
+
+
+
+# confirm the task 
+def confirm_task(request, id) -> HttpResponseRedirect:
+  if id and get_task(id) and request.user.is_staff:
+    update_status_field(request, get_task(id)[0])
+    messages.success(request, f"{id} ﺗﻢ التأكيد على انجاز اﻟﻤﻬﻤﺔ المرقمه")
+  return HttpResponseRedirect('/tasks/systems/')
+
+
+
+# update the current task received
+def update_received_field(task):
+  task.received = True
+  task.save()
+
+
+
+# update the current task status
+def update_status_field(request, task) -> bool:
+  task.status = "منجزة" if request.user.is_staff else "بأنتظار الموافقة"
+  task.save()
+  return True
+
 
 
 # get all the active users 

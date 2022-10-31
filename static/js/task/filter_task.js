@@ -1,10 +1,11 @@
 function filterTasks() {
+  console.log("ali")
   var status = document.getElementById("task-status").value;
   var employee = document.getElementById("employees").value;
   
   var table, tr, statusColumn, i, statusValue, employeesColumn, employees, isEmpty = 0;
 
-  table = document.querySelector(".task-table");
+  table = document.getElementById("task-table");
   tr    = table.getElementsByTagName("tr");
 
   for (i = 0; i < tr.length; i++) {

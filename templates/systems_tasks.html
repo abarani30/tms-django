@@ -78,7 +78,7 @@
       </div>
 
       <div class="col-md-2 py-4">
-        <button class="btn btn-primary filterBtn" onClick="filterTasks()">ﺗﺤﺪﻳﺪ</button>
+        <button class="btn btn-primary filterBtn" onclick="filterTasks()">ﺗﺤﺪﻳﺪ</button>
       </div>
 
     </div>
@@ -166,7 +166,7 @@
                   <a href="/tasks/systems/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
                   {% endif %}
                   {% if task.status == "بأنتظار الموافقة" %}
-                  <a href="#" class="me-2" onclick="confirmTask(`{{task.id}}`)">تأكيد</a>
+                  <a href="/tasks/systems/confirm/{{task.id}}" class="me-2">تأكيد</a>
                   {% endif %}
                   {% if task.status == "منجزة" %}
                   <a href="#" class="me-2" onclick="evaluateTask(`{{task.id}}`)">تقييم</a>
@@ -217,7 +217,7 @@
                     <a href="/tasks/systems/receive/{{task.id}}" class="me-2">استلمت</a>
                     {% endif %}
                     {% if task.status == "غير منجزة"  %}
-                    <a href="#" class="me-2">انجزت</a>
+                    <a href="/tasks/systems/achieve/{{task.id}}" class="me-2">انجزت</a>
                     {% endif %}
                   </td>
                 </tr>
