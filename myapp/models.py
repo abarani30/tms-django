@@ -75,9 +75,8 @@ class Task(models.Model):
     # get the total notifications for the current user 
     def get_employee_tasks (self, request):
         return [
-            notification for notification in Notification.objects.all()
-            .order_by("-created_at")
-            if request.user in notification.emps.all()
+            task for task in Task.objects.prefetch_related("employees").order_by("-created_at")
+            if request.user in task.employees.all()
         ]
     
     # count the total notifications for the current user

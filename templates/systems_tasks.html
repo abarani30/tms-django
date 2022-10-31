@@ -171,7 +171,7 @@
                   {% if task.status == "منجزة" %}
                   <a href="#" class="me-2" onclick="evaluateTask(`{{task.id}}`)">تقييم</a>
                   {% endif %}
-                  <a href="#" class="me-2" onclick="deleteTask(`{{task.id}}`)">حذف</a>
+                  <a href="/tasks/systems/delete/{{task.id}}" class="me-2">حذف</a>
                 </td>
               </tr>
               <!-- when you're a normal user -->

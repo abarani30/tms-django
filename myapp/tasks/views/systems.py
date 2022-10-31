@@ -73,6 +73,14 @@ def confirm_task(request, id) -> HttpResponseRedirect:
   return HttpResponseRedirect('/tasks/systems/')
 
 
+# confirm the task 
+def delete_task(request, id) -> HttpResponseRedirect:
+  if id and get_task(id) and request.user.is_staff:
+    decactivate_task(get_task(id)[0])
+    messages.success(request, f"{id} ﺗﻢ حذف اﻟﻤﻬﻤﺔ المرقمه")
+  return HttpResponseRedirect('/tasks/systems/')
+
+
 
 # update the current task received
 def update_received_field(task):
@@ -86,6 +94,13 @@ def update_status_field(request, task) -> bool:
   task.status = "منجزة" if request.user.is_staff else "بأنتظار الموافقة"
   task.save()
   return True
+
+
+
+# deactivate the current task
+def decactivate_task(task):
+  task.active = False
+  task.save()
 
 
 

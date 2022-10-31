@@ -17,24 +17,32 @@
   <!--Notificaitons Page-->
   <main class="px-3" style="margin-top: 80px !important">
     <div class="row px-1">
+
+      {% if all_notifications.count != 0 %}
       <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{total}}</b></div>
-     <!--
-       <ul class="list-group list-group gap-2">
+      <ul class="list-group list-group gap-2">
         {% for notification in all_notifications %}
-          <li class="list-group-item border-1">
-            <div class="me-1">
-              <div class="fw-bold text-danger">{{notification.message}}</div>
-              <span class="text-muted" style="font-size: 15.5px !important">{{notification.created_at}}</span>
-            </div>
-            {% if not notification.received %}
-            <button class="btn btn-primary btn-sm">تمييز كمقروء</button>
+        <li class="list-group-item border-1">
+          <div class="me-1">
+            {% if notification.received %}
+            <div class="fw-bold">{{notification.subject}}</div>
             {% else %}
-            <span class="mt-2">مقروء</span>
+            <div class="fw-bold text-danger">{{notification.subject}}</div>
             {% endif %}
-          </li>
+            <span class="text-muted" style="font-size: 15.5px !important">{{notification. | timesince}}</span>
+          </div>
+          {% if not notification.received %}
+          <button class="btn btn-primary btn-sm">تمييز كمقروء</button>
+          {% else %}
+          <span class="mt-2">مقروء</span>
+          {% endif %}
+        </li>
         {% endfor %}
       </ul>
-     -->
+      {% else %}
+        <p>لا توجد اشعارات حالياً</p>
+      {% endif %}
+      
     </div>
   </main>
   <!---->
