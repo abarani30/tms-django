@@ -1,0 +1,32 @@
+<div class="modal fade" id="director-modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 bg-white" id="exampleModalToggleLabel"> توجية مسؤولي الشعب</h1>
+        <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/employees/systems/register/" method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-bold">المسؤول</label>
+            <select class="form-select" aria-label="Default select example" name="role">
+              {% for admin in admins %}
+              <option value={{admin.username}}>{{admin.username}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">المهمة</label>
+            <textarea class="form-control" name="task-subject" rows="3" placeholder="اكتب موضوع المهمه هنا" required></textarea>
+          </div>
+          <div class="row modal-footer mt-2 d-flex justify-content-start align-items-center">
+            <div class="col-md-3 mt-2 p-0">
+              <input type="submit" class="btn btn-primary" value="ارسال">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

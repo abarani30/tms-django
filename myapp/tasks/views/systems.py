@@ -7,20 +7,20 @@ from typing import Dict, List
 from redmail import outlook
 import datetime, uuid
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.template.response import SimpleTemplateResponse
 from django.contrib.auth.decorators import user_passes_test
 
 
-# to check the user division
-def check_division(user):
-  return bool(user.is_superuser or user.profile.division == "الانظمة")
+# check if the user is in the same group
+def check_group(user) -> bool:
+  return bool(user.groups.filter(name="Systems").exists())
 
 
 
 # get request
-@user_passes_test(lambda user: check_division(user))
-def get_all(request) -> SimpleTemplateResponse:
+@user_passes_test(lambda user: check_group(user) or user.is_superuser)
+def get_all(request) -> HttpResponse:
   if get_all_tasks() != []:
     return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks()))
   return render(request, "systems_tasks.html", context = default_context())
@@ -48,7 +48,7 @@ def default_context():
 
 
 # create new task
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: check_group(user))
 def create_task(request) -> HttpResponseRedirect:
   if request.method != "POST":
     return HttpResponseRedirect("/tasks/systems/")
@@ -146,11 +146,11 @@ def rate(task, rate_value):
 
 
 
-# get all the active users 
+# get all the active users in the same group 
 def get_all_users() -> List[dict]:
   return [
     user for user in User.objects.all().select_related("profile") 
-    if user.profile.division == "الانظمة" and user.is_active
+    if check_group(user) and user.is_active
   ]
 
 
@@ -159,7 +159,7 @@ def get_all_users() -> List[dict]:
 def get_all_tasks() -> List[dict]:
   return [
     task for task in get_month_tasks()[0]
-    if task.user.profile.division == "الانظمة" and task.active
+    if task.user.groups.filter(name="Systems").exists() and task.active
   ]
 
 

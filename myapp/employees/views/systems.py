@@ -1,28 +1,34 @@
 from django.shortcuts import render
 from django.views import View
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from myapp.models import Task
 from django.template.response import SimpleTemplateResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 
 
 # check the user division
-def check_division(user):
-  return bool(user.is_superuser or user.profile.division == "الانظمة")
+def check_group(user):
+  return bool(user.groups.filter(name="Systems").exists())
+
+
+
+# get the group
+def get_group():
+  return Group.objects.get(name="Systems")
 
 
 
 # check if the user is admin 
-def is_admin(user):
-  return bool(user.is_staff)
+def is_staff_only(user):
+  return bool(user.is_staff and not user.is_superuser)
 
 
 
 # a view to handle the get request
-@user_passes_test(lambda user: check_division(user))
-def get_all_employees(request) -> SimpleTemplateResponse:
+@user_passes_test(lambda user: check_group(user) or user.is_superuser)
+def get_all_employees(request) -> HttpResponse:
   if is_task():
     return render(request, "systems_employees.html", 
     context= get_context(request, is_task()))
@@ -31,15 +37,14 @@ def get_all_employees(request) -> SimpleTemplateResponse:
 
 
 # a view to handle the post request (register a new user)
-@user_passes_test(lambda user: is_admin(user))
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: check_group(user) and is_staff_only(user))
 def register_user(request) -> HttpResponseRedirect:
   if request.method != "POST":
     return HttpResponseRedirect("/employees/systems/")
   
   if not validate_data(request): messages.error(request, "البيانات التي ارسلتها غير صحيحة")
   else: 
-    update_profile(request, assign_role(request, add_user(request)))
+    update_profile(request, assign_role(request, add_to_group(add_user(request))))
     messages.success(request, "تم انشاء الحساب بنجاح")
   return HttpResponseRedirect("/employees/systems/")
 
@@ -68,9 +73,12 @@ def is_task():
 
 
 
-# get all the active employees in the same division
+# get all the active employees in the same group
 def get_all():
-  return [user for user in User.objects.all().select_related("profile") if user.profile.division == "الانظمة" and user.is_active]
+  return [
+    user for user in User.objects.all().select_related("profile") 
+    if check_group(user) and user.is_active
+  ]
 
 
 
@@ -119,6 +127,13 @@ def add_user(request) -> User:
     email = request.POST.get("email")
   )
 
+
+
+# add the current user to the group
+def add_to_group(user):
+  if user:
+    get_group().user_set.add(user)
+    return user
 
 
 # assign a role to the newly created user

@@ -23,7 +23,7 @@
         <input type="text" id="myInput" onkeyup="search()" placeholder="ابحث عن عنوان">
       </div>
       <div class="col-md-2 py-4">
-        <button class="btn btn-primary">انشاء مهمه</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" href="#director-modal">توجية</button>
       </div>
     </div>
 
@@ -39,6 +39,7 @@
 
 
     <div class="row px-1">
+      {% if tasks != "[]" %}
       <div class="table-responsive">
         <table id="table" class="table director-tasks-table" style="width:100%">
           <thead>
@@ -103,7 +104,16 @@
           </tbody>
         </table>
       </div>
+      {% else %}
+      <p>لا توجد مهام موجهة حالياً</p>
+      {% endif %}
     </div>
+
+    <!-- Director Modal-->
+    {% if user.is_superuser %}
+    {% include "components/director_modal.html" %}
+    {% endif %}
+    <!---->
 
   </main>
   <!---->
