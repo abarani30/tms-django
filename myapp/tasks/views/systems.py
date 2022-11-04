@@ -1,7 +1,6 @@
-from re import T, U
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from myapp.models import Task
 from typing import Dict, List
 from redmail import outlook
@@ -10,27 +9,22 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.response import SimpleTemplateResponse
 from django.contrib.auth.decorators import user_passes_test
-
-
-# check if the user is in the same group
-def check_group(user) -> bool:
-  return bool(user.groups.filter(name="Systems").exists())
-
+from django.views.decorators.http import require_http_methods
 
 
 # get request
-@user_passes_test(lambda user: check_group(user) or user.is_superuser)
+@require_http_methods(['GET'])
 def get_all(request) -> HttpResponse:
-  if get_all_tasks() != []:
-    return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks()))
-  return render(request, "systems_tasks.html", context = default_context())
+  if get_all_tasks(request) != []:
+    return render(request, "systems_tasks.html", context = get_context(request, get_all_tasks(request)))
+  return render(request, "systems_tasks.html", context = default_context(request))
 
 
 
 # get the context dictionary
-def get_context(request, tasks):
+def get_context(request, tasks) -> Dict:
   return {
-    "employees": get_all_users(),
+    "employees": get_all_users(request),
     "tasks": tasks,
     "unreadable": tasks[0].unread_employee_tasks(request)
   }
@@ -38,9 +32,9 @@ def get_context(request, tasks):
 
 
 # in case when there is no tasks to return
-def default_context():
+def default_context(request) -> Dict:
   return {
-    "employees": get_all_users(),
+    "employees": get_all_users(request),
     "tasks": "[]",
     "unreadable": 0
   }
@@ -48,7 +42,8 @@ def default_context():
 
 
 # create new task
-@user_passes_test(lambda user: check_group(user))
+@require_http_methods(['POST'])
+@user_passes_test(lambda user: user.is_staff)
 def create_task(request) -> HttpResponseRedirect:
   if request.method != "POST":
     return HttpResponseRedirect("/tasks/systems/")
@@ -65,9 +60,9 @@ def create_task(request) -> HttpResponseRedirect:
 
 
 # receive the task 
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: not user.is_staff)
 def receive_task(request, id) -> HttpResponseRedirect:
-  if id and get_task(id) and not request.user.is_staff:
+  if len(get_task(id)) != 0 and user_in_task(request, id):
     update_received_field(get_task(id)[0])
     messages.success(request, f"{id} ﺗﻢ استلام اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
@@ -75,9 +70,9 @@ def receive_task(request, id) -> HttpResponseRedirect:
   
 
 # achieve the task (task completion) 
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: not user.is_staff)
 def achieve_task(request, id) -> HttpResponseRedirect:
-  if id and get_task(id) and not request.user.is_staff:
+  if len(get_task(id)) != 0 and user_in_task(request, id):
     update_status_field(request, get_task(id)[0])
     messages.success(request, f"{id} ﺗﻢ انجاز اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
@@ -85,9 +80,9 @@ def achieve_task(request, id) -> HttpResponseRedirect:
 
 
 # confirm the task 
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: user.is_staff)
 def confirm_task(request, id) -> HttpResponseRedirect:
-  if id and get_task(id) and request.user.is_staff:
+  if len(get_task(id)) != 0 and is_task_owner(request, id):
     update_status_field(request, get_task(id)[0])
     messages.success(request, f"{id} ﺗﻢ التأكيد على انجاز اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
@@ -95,9 +90,9 @@ def confirm_task(request, id) -> HttpResponseRedirect:
 
 
 # delete the task 
-@user_passes_test(lambda user: check_division(user))
+@user_passes_test(lambda user: user.is_staff)
 def delete_task(request, id) -> HttpResponseRedirect:
-  if id and get_task(id) and request.user.is_staff:
+  if len(get_task(id)) != 0 and is_task_owner(request, id):
     decactivate_task(get_task(id)[0])
     messages.success(request, f"{id} ﺗﻢ حذف اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
@@ -105,9 +100,10 @@ def delete_task(request, id) -> HttpResponseRedirect:
 
 
 # assign a rate to the task 
-@user_passes_test(lambda user: check_division(user))
+@require_http_methods(['POST'])
+@user_passes_test(lambda user: user.is_staff)
 def rate_task(request, id) -> HttpResponseRedirect:
-  if request.method == "POST" and id and get_task(id) and request.user.is_staff:
+  if len(get_task(id)) != 0 and is_task_owner(request, id):
     rate(get_task(id)[0], request.POST.get("task-rate"))
     messages.success(request, f"{id} ﺗﻢ تقييم اﻟﻤﻬﻤﺔ المرقمه")
   return HttpResponseRedirect('/tasks/systems/')
@@ -147,24 +143,26 @@ def rate(task, rate_value):
 
 
 # get all the active users in the same group 
-def get_all_users() -> List[dict]:
-  return [
-    user for user in User.objects.all().select_related("profile") 
-    if check_group(user) and user.is_active
-  ]
+def get_all_users(request) -> List[dict]:
+  if request.user.is_superuser:
+    return User.objects.select_related("profile")
+  return list(Group.objects.filter(name=request.user.groups.all()[0]))[0].user_set.all()
+
 
 
 
 # get all the tasks in the current month 
-def get_all_tasks() -> List[dict]:
+def get_all_tasks(request) -> List[dict]:
+  if request.user.is_superuser:
+    return Task.objects.prefetch_related("employees").order_by("-created_at")
   return [
     task for task in get_month_tasks()[0]
-    if task.user.groups.filter(name="Systems").exists() and task.active
+    if task.user.groups.filter(name=request.user.groups.all()[0]).exists() and task.active
   ]
 
 
 
-# get all the employee tasks 
+# get all the employee's tasks
 def get_employee_tasks(request) -> List[dict]:
   return [
     task for task in get_month_tasks()[0]
@@ -213,7 +211,7 @@ def validate_data(request) -> bool:
    return bool(
     is_not_empty(request) and 
     compare_dates(request) and 
-    len(is_employee(request.POST.getlist("employees"))) == 
+    len(get_employees(request)) ==
     len(request.POST.getlist("employees"))
   )
 
@@ -261,11 +259,17 @@ def convert_day_name(day) -> str:
 
 
 # used to check if the username exists or not
-def is_employee(employees) -> List[dict]:
+def get_employees(request) -> List[dict]:
   return [
-    User.objects.get(username=employee) for employee in employees
-    if User.objects.filter(username=employee).exists()
+    User.objects.get(username=employee) for employee in request.POST.getlist("employees")
+    if employee in admin_group(request)
   ]
+
+
+
+# check if the employee (user) is in the admin (staff) group
+def admin_group(request) -> List[str]:
+ return [user.username for user in request.user.groups.all()[0].user_set.all()]
 
 
 
@@ -285,14 +289,14 @@ def add_task(request) -> List[dict]:
 
 # assign the new task to each employee
 def assign_task(request, task):
-  for employee in is_employee(request.POST.getlist("employees")):
+  for employee in get_employees(request):
     task.employees.add(employee)
 
 
 
 # send an email to each employee 
 def send_email(request):
-  for employee in is_employee(request.POST.getlist("employees")):
+  for employee in get_employees(request):
     outlook.username = request.user.email
     outlook.password = "prestige1"
     outlook.send(
@@ -306,3 +310,15 @@ def send_email(request):
 # get the current task by id
 def get_task(id):
   return Task.objects.filter(pk=id).prefetch_related("employees")
+
+
+
+# check if the admin is the owner of the task
+def is_task_owner(request, id):
+  return request.user == get_task(id)[0].user
+
+
+
+# check if the user in the task employees
+def user_in_task(request, id):
+  return request.user in get_task(id)[0].employees.all()

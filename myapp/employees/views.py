@@ -6,28 +6,11 @@ from django.template.response import SimpleTemplateResponse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-
-
-# check the user division
-def check_group(user):
-  return bool(user.groups.filter(name="Systems").exists())
-
-
-
-# get the group
-def get_group():
-  return Group.objects.get(name="Systems")
-
-
-
-# check if the user is admin 
-def is_staff_only(user):
-  return bool(user.is_staff and not user.is_superuser)
-
+from django.views.decorators.http import require_http_methods
 
 
 # a view to handle the get request
-@user_passes_test(lambda user: check_group(user) or user.is_superuser)
+@require_http_methods(['GET'])
 def get_all_employees(request) -> HttpResponse:
   if is_task():
     return render(request, "systems_employees.html", 
@@ -37,23 +20,24 @@ def get_all_employees(request) -> HttpResponse:
 
 
 # a view to handle the post request (register a new user)
-@user_passes_test(lambda user: check_group(user) and is_staff_only(user))
+@require_http_methods(['POST'])
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
 def register_user(request) -> HttpResponseRedirect:
   if request.method != "POST":
-    return HttpResponseRedirect("/employees/systems/")
-  
-  if not validate_data(request): messages.error(request, "البيانات التي ارسلتها غير صحيحة")
+    return HttpResponseRedirect("/employees/")
+  if not validate_data(request): 
+    messages.error(request, "البيانات التي ارسلتها غير صحيحة")
   else: 
-    update_profile(request, assign_role(request, add_to_group(add_user(request))))
+    update_profile(request, assign_role(request, add_to_group(request, add_user(request))))
     messages.success(request, "تم انشاء الحساب بنجاح")
-  return HttpResponseRedirect("/employees/systems/")
+  return HttpResponseRedirect("/employees/")
 
 
 
 # get the context dictionary
 def get_context(request, task):
   return {
-    "employees": get_all(),
+    "employees": get_all(request),
     "unreadable": task[0].unread_employee_tasks(request)
   }
 
@@ -74,11 +58,10 @@ def is_task():
 
 
 # get all the active employees in the same group
-def get_all():
-  return [
-    user for user in User.objects.all().select_related("profile") 
-    if check_group(user) and user.is_active
-  ]
+def get_all(request):
+  if request.user.is_superuser: 
+    return User.objects.all().select_related("profile")
+  return list(Group.objects.filter(name=request.user.groups.all()[0]))[0].user_set.all()
 
 
 
@@ -102,7 +85,7 @@ def is_username(request) -> bool:
 
 
 # password length should be more than six characters
-def password_length(request) ->bool:
+def password_length(request) -> bool:
   return len(request.POST.get("password")) >= 6
 
 
@@ -130,10 +113,11 @@ def add_user(request) -> User:
 
 
 # add the current user to the group
-def add_to_group(user):
+def add_to_group(request, user):
   if user:
-    get_group().user_set.add(user)
+    request.user.groups.all()[0].user_set.add(user)
     return user
+
 
 
 # assign a role to the newly created user

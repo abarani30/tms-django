@@ -15,25 +15,7 @@
             <a class="nav-link" aria-current="page" href="/">الرئيسية</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#employees" id="navbarDropdown" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              الموظفين
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if user.is_superuser %}
-              <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
-              <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
-              <li><a class="dropdown-item" href="#">الادارية</a></li>
-              <li><a class="dropdown-item" href="#">ادخال البيانات</a></li>      
-              {% else %}
-                {% if user.profile.division == "الانظمة" %}
-                <li><a class="dropdown-item" href="/employees/systems/">الانظمة</a></li>
-                {% endif %}
-                {% if user.profile.division == "الفنية"  %}
-                <li><a class="dropdown-item" href="/employees/maintenance/">الفنية</a></li>
-                {% endif %}
-              {% endif %}
-            </ul>
+            <a class="nav-link" aria-current="page" href="/employees/">الموظفين</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#tasks" id="navbarDropdown" role="button"

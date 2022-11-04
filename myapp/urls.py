@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import HomePageView
-from .employees.views.systems import get_all_employees, register_user
-from .employees.views.maintenance import MaintenanceEmployeesView
+from .employees.views import get_all_employees, register_user
 from .tasks.views.director import get_all_director_tasks, create_task_to_staff
 from .tasks.views.systems import (
   get_all, create_task, receive_task, achieve_task, 
@@ -12,12 +11,11 @@ from .auth import auth
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-  path("", login_required(HomePageView.as_view()), name="home_page"),
-  path("accounts/login/", auth.loginUser, name="login_page"),
-  path("logout/", auth.logoutUser, name="logout_user"),
-  path("employees/systems/", login_required(get_all_employees)),
-  path("employees/systems/register/", login_required(register_user)),
-  path("employees/maintenance/", login_required(MaintenanceEmployeesView.as_view()), name="maintenance_employees_page" ),
+  path("", login_required(HomePageView.as_view())),
+  path("accounts/login/", auth.loginUser),
+  path("logout/", auth.logoutUser),
+  path("employees/", login_required(get_all_employees)),
+  path("employees/register/", login_required(register_user)),
   path("tasks/systems/", login_required(get_all)),
   path("tasks/systems/create/", login_required(create_task)),
   path("tasks/systems/receive/<int:id>", login_required(receive_task)),
