@@ -13,9 +13,9 @@ from django.views.decorators.http import require_http_methods
 @require_http_methods(['GET'])
 def get_all_employees(request) -> HttpResponse:
   if is_task():
-    return render(request, "systems_employees.html", 
+    return render(request, "employees.html", 
     context= get_context(request, is_task()))
-  return render(request, "systems_employees.html", context = default_context()) 
+  return render(request, "employees.html", context = default_context()) 
 
 
 
@@ -60,7 +60,7 @@ def is_task():
 # get all the active employees in the same group
 def get_all(request):
   if request.user.is_superuser: 
-    return User.objects.all().select_related("profile")
+    return [user for user in User.objects.all().select_related("profile") if not user.is_superuser]
   return list(Group.objects.filter(name=request.user.groups.all()[0]))[0].user_set.all()
 
 

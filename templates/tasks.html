@@ -37,6 +37,7 @@
       </div>
     </center>
 
+    {% if user.is_staff and not user.is_superuser %}
     <div class="row px-1 mb-3">
       <div class="col-md-3">
         <label class="fs-6 fw-bold px-1">اﺑﺤﺚ:</label>
@@ -48,6 +49,7 @@
       </div>
       {% endif %}
     </div>
+    {% endif %}
 
     {% if user.is_staff %}
     <div class="row px-1 mt-3">
@@ -100,7 +102,7 @@
               {% endif %}
               <th>اﺳﺘﻠﻤﺖ</th>
               <th>اﻟﺤﺎﻟﺔ</th>
-              {% if user.is_staff %}
+              {% if user.is_staff and not user.is_superuser %}
               <th span="0">تفعيل</th>
               {% endif %}
               <th></th>
@@ -152,7 +154,8 @@
                     </div>
                     {% endif %}
                   {% endif %}
-                  <form action="/tasks/systems/rate/{{task.id}}" method="post">
+                  {% if not user.is_superuser %}
+                  <form action="/tasks/rate/{{task.id}}" method="post">
                     {% csrf_token %} 
                     {% if task.rate == 0 and task.status == "منجزة" %}
                     <select class="task-rate" name="task-rate">
@@ -172,10 +175,11 @@
                       <option value="100">100</option>
                     </select>
                     {% endif %}
-                    {% if task.rate == 0 and  task.status == "منجزة" %}
+                    {% if task.rate == 0 and  task.status == "منجزة" and not user.is_superuser %}
                     <input type="submit" value="تقييم" class="btn btn-success btn-sm" style="margin-top: -4px; margin-right: 5px">
                     {% endif %}
                   </form>
+                  {% endif %}
                 </td>
                 <td>
                   {% if task.received %}
@@ -193,18 +197,18 @@
                 {% if task.status == "بأنتظار الموافقة" %}
                 <td class="fw-bold text-primary">{{task.status}}</td>
                 {% endif %}
-                {% if task.status != "منجزة" %}
+                {% if task.status != "منجزة" and not user.is_superuser %}
                 <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
                 {% endif %}
                 <td style="display: none;">
                   {% if task.status == "غير منجزة"  %}
-                  <a href="/tasks/systems/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
+                  <a href="/tasks/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
                   {% endif %}
                   {% if task.status == "بأنتظار الموافقة" %}
-                  <a href="/tasks/systems/confirm/{{task.id}}" class="me-2">تأكيد</a>
+                  <a href="/tasks/confirm/{{task.id}}" class="me-2">تأكيد</a>
                   {% endif %}
                   {% if task.status == "غير منجزة" %}
-                  <a href="/tasks/systems/delete/{{task.id}}" class="me-2">حذف</a>
+                  <a href="/tasks/delete/{{task.id}}" class="me-2">حذف</a>
                   {% endif %}
                 </td>
               </tr>
@@ -248,10 +252,10 @@
                   {% endif %}
                   <td>
                     {% if not task.received %}
-                    <a href="/tasks/systems/receive/{{task.id}}" class="me-2">استلمت</a>
+                    <a href="/tasks/receive/{{task.id}}" class="me-2">استلمت</a>
                     {% endif %}
                     {% if task.status == "غير منجزة"  %}
-                    <a href="/tasks/systems/achieve/{{task.id}}" class="me-2">انجزت</a>
+                    <a href="/tasks/achieve/{{task.id}}" class="me-2">انجزت</a>
                     {% endif %}
                   </td>
                 </tr>
