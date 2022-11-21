@@ -9,11 +9,26 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from redmail import outlook
 from myapp.models import Task
+import xlwt
 
 
 # get request
 @require_http_methods(['GET'])
 def get_all(request) -> HttpResponse:
+    style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
+    num_format_str='#,##0.00')
+    style1 = xlwt.easyxf(num_format_str='D-MMM-YY')
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet('A Test Sheet')
+
+    ws.write(0, 0, 1234.56, style0)
+    ws.write(1, 0, datetime.datetime.now(), style1)
+    ws.write(2, 0, 1)
+    ws.write(2, 1, 1)
+    ws.write(2, 2, xlwt.Formula("A3+B3"))
+
+    wb.save('example.xls')
     if len(get_all_tasks(request)) != 0:
         return render(request, "tasks.html", context=get_context(request, get_all_tasks(request)))
     return render(request, "tasks.html", context=default_context(request))

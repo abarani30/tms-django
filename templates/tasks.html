@@ -139,7 +139,7 @@
                 </td>
                 {% endif %}
                 <td>
-                  {% if task.rate != 0 and task.status == "منجزة" %}
+                  {% if task.rate != 0 and task.status == "منجزة" and not user.is_superuser %}
                     {% if task.rate < 50 %}
                     <div class="progress mt-1 me-0">
                       <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width:{{task.rate}}%">
@@ -179,6 +179,8 @@
                     <input type="submit" value="تقييم" class="btn btn-success btn-sm" style="margin-top: -4px; margin-right: 5px">
                     {% endif %}
                   </form>
+                  {% else %}
+                  {{task.rate}}
                   {% endif %}
                 </td>
                 <td>
