@@ -1,5 +1,5 @@
 function editTask(taskId) {
-  var taskRate, taskStatus;
+  var taskStatus;
 
   table = document.getElementById("task-table");
   tr = table.getElementsByTagName("tr");
@@ -7,10 +7,9 @@ function editTask(taskId) {
   for (i = 1; i < tr.length; i++) {
     td = tr[i].getElementsByTagName("td")[0];
     if (td && td.innerText == taskId) {
-      taskRate    = (tr[i].getElementsByTagName("td")[5]).children[0];
-      taskStatus  = tr[i].getElementsByTagName("td")[7];
-      checkbox    = (tr[i].getElementsByTagName("td")[8]).children[0];
-      links       = tr[i].getElementsByTagName("td")[9];
+      taskStatus  = tr[i].getElementsByTagName("td")[6];
+      checkbox    = (tr[i].getElementsByTagName("td")[7]).children[0];
+      links       = tr[i].getElementsByTagName("td")[8];
 
       if(checkbox.checked) {
         if (taskStatus.innerText == "منجزة") taskRate.removeAttribute("disabled")
@@ -19,7 +18,6 @@ function editTask(taskId) {
       }
       else {
         tr[i].style.background = ""
-        taskRate.setAttribute("disabled", true)
         tr[i].style.background = ""
         links.style.display = "none";
       }
@@ -28,7 +26,7 @@ function editTask(taskId) {
 }
 
 function editDirectorTask(taskId) {
-  var taskTitle, taskRate, admins,
+  var taskTitle, admins,
 
   table = document.querySelector(".director-tasks-table");
   tr = table.getElementsByTagName("tr");

@@ -6,13 +6,15 @@
         <button type="button" class="btn-close me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/employees/systems/register/" method="POST">
+        <form action="/tasks/director/create/" method="POST">
           {% csrf_token %}
           <div class="mb-3">
             <label class="form-label fw-bold">المسؤول</label>
-            <select class="form-select" aria-label="Default select example" name="role">
-              {% for admin in admins %}
-              <option value={{admin.username}}>{{admin.username}}</option>
+            <select class="form-select" aria-label="Default select example" name="staff-name">
+              {% for employee in employees %}
+                {% if employee.is_staff and not employee.is_superuser %}
+                  <option value={{employee.username}}>{{employee.username}}</option>
+                {% endif %}
               {% endfor %}
             </select>
           </div>

@@ -20,22 +20,6 @@
     <div class="container-fluid">
       <div class="row px-1">
         <div class="col-md-12">
-          <ul class="px-4 statistics">
-            <li class="pt-1">
-              الموظف
-              <a href="#"><b>علي ستار</b></a>
-              حصل على اعلى معدل بألشهر الحالي
-              والذي هو
-              <b>(900)</b>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="row px-1">
-        <div class="col-md-12">
           <u class="fw-bold">الاحصائيات:</u>
           <ul class="px-4 statistics">
             <li class="pt-1">عدد المهام: <b>{{task.total_staff_tasks}}</b></li>
@@ -120,38 +104,6 @@
                 منذ {{task.created_at | timesince}}
               </li>
             {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
-    {% if user.is_superuser %}
-    <div class="container-fluid mt-2">
-      <div class="row px-1">
-        <div class="col-md-12">
-          <p>
-            <u class="fw-bold">السجل:</u>
-            <a href="#">(الكل)</a>
-          </p>
-          <ul class="px-4 statistics">
-            <li class="pt-1">
-              قام
-              <b>امير حاتم</b>
-              بأنشاء حساب للموظف
-              <b>صفا فوزي</b>
-            </li>
-            <li class="pt-1">
-              قام
-              <b>امير حاتم</b>
-              بتحديث بيانات حسابه
-            </li>
-            <li class="pt-1">
-              قام
-              <b>بكر هادي</b>
-              بأنشاء حساب للموظف
-              <b>محمد قاسم</b>
-            </li>
           </ul>
         </div>
       </div>

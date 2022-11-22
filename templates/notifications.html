@@ -18,29 +18,58 @@
   <main class="px-3" style="margin-top: 80px !important">
     <div class="row px-1">
 
-      {% if all_notifications.count != 0 %}
-      <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{total}}</b></div>
-      <ul class="list-group list-group gap-2">
-        {% for notification in all_notifications %}
-        <li class="list-group-item border-1">
-          <div class="me-1">
-            {% if notification.received %}
-            <div class="fw-bold">{{notification.subject}}</div>
-            {% else %}
-            <div class="fw-bold text-danger">{{notification.subject}}</div>
-            {% endif %}
-            <span class="text-muted" style="font-size: 15.5px !important">{{notification. | timesince}}</span>
-          </div>
-          {% if not notification.received %}
-          <button class="btn btn-primary btn-sm">تمييز كمقروء</button>
+      {% if not user.is_staff and not user.is_superuser %}
+        {% if all_notifications.count != 0 %}
+          <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{all_notifications|length}}</b></div>
+          <ul class="list-group list-group gap-2">
+            {% for notification in all_notifications %}
+            <li class="list-group-item border-1">
+              <div class="me-1">
+                {% if notification.received %}
+                <div class="fw-bold">{{notification.subject}}</div>
+                {% else %}
+                <div class="fw-bold text-danger">{{notification.subject}}</div>
+                {% endif %}
+                <span class="text-muted" style="font-size: 15.5px !important">{{notification.created_at | timesince}}</span>
+              </div>
+              {% if not notification.received %}
+              <button class="btn btn-primary btn-sm">تمييز كمقروء</button>
+              {% else %}
+              <span class="mt-2">مقروء</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
           {% else %}
-          <span class="mt-2">مقروء</span>
+            <p>لا توجد اشعارات حالياً</p>
           {% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-        <p>لا توجد اشعارات حالياً</p>
+      {% endif %}
+      
+      {% if user.is_staff and not user.is_superuser %}
+        {% if superuser_notifications.count != 0 %}
+          <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{superuser_notifications|length}}</b></div>
+          <ul class="list-group list-group gap-2">
+            {% for notification in superuser_notifications %}
+            <li class="list-group-item border-1">
+              <div class="me-1">
+                {% if notification.received %}
+                <div class="fw-bold">{{notification.message}}</div>
+                {% else %}
+                <div class="fw-bold text-danger">{{notification.message}}</div>
+                {% endif %}
+                <span class="text-muted" style="font-size: 15.5px !important">{{notification.created_at | timesince}}</span>
+              </div>
+              {% if not notification.received %}
+              <a href="/notifications/receive/{{notification.id}}">تمييز كمقروء</a>
+              {% else %}
+              <span class="mt-2">مقروء</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+            <p>لا توجد اشعارات حالياً</p>
+          {% endif %}
       {% endif %}
       
     </div>

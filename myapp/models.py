@@ -70,11 +70,6 @@ class Task(models.Model):
             task for task in Task.objects.prefetch_related("employees").order_by("-created_at")
             if request.user in task.employees.all()
         ]
-    
-    # count the total notifications for the current user
-    def total_employee_tasks(self, request):
-        return sum(request.user in task.employees.all()
-            for task in Task.objects.all()) 
 
     # count the total unreadable notifications for the current user 
     def unread_employee_tasks(self, request):
@@ -118,6 +113,7 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message 
+
 
     
 

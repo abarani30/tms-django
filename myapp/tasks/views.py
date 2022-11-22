@@ -8,27 +8,12 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from redmail import outlook
-from myapp.models import Task
-import xlwt
+from myapp.models import Task, Notification
 
 
 # get request
 @require_http_methods(['GET'])
 def get_all(request) -> HttpResponse:
-    style0 = xlwt.easyxf('font: name Times New Roman, color-index red, bold on',
-    num_format_str='#,##0.00')
-    style1 = xlwt.easyxf(num_format_str='D-MMM-YY')
-
-    wb = xlwt.Workbook()
-    ws = wb.add_sheet('A Test Sheet')
-
-    ws.write(0, 0, 1234.56, style0)
-    ws.write(1, 0, datetime.datetime.now(), style1)
-    ws.write(2, 0, 1)
-    ws.write(2, 1, 1)
-    ws.write(2, 2, xlwt.Formula("A3+B3"))
-
-    wb.save('example.xls')
     if len(get_all_tasks(request)) != 0:
         return render(request, "tasks.html", context=get_context(request, get_all_tasks(request)))
     return render(request, "tasks.html", context=default_context(request))
@@ -113,17 +98,6 @@ def delete_task(request, id: int) -> HttpResponseRedirect:
 
 
 
-# assign a rate to the task
-@require_http_methods(['POST'])
-@user_passes_test(lambda user: user.is_staff)
-def rate_task(request, id: int) -> HttpResponseRedirect:
-    if len(get_task(id)) != 0 and is_task_owner(request, id):
-        rate(get_task(id)[0], request.POST.get("task-rate"))
-        messages.success(request, f"{id} ﺗﻢ تقييم اﻟﻤﻬﻤﺔ المرقمه")
-    return HttpResponseRedirect('/tasks/')
-
-
-
 # update the current task received
 def update_received_field(task: Dict):
     if not task.received:
@@ -149,17 +123,6 @@ def deactivate_task(task: Dict) -> bool:
         task.save()
         return True
     return False
-
-
-
-# update the current rate field
-def rate(task: Dict, rate_value: int):
-    if task.rate == 0 and task.status == "منجزة":
-        task.rate = rate_value
-        task.save()
-        return True
-    return False
-
 
 
 # get all the active users in the same group
@@ -355,7 +318,31 @@ def get_all_director_tasks(request) -> HttpResponse:
 # post request
 @user_passes_test(lambda user: user.is_superuser)
 def create_task_to_staff(request):
-  return HttpResponseRedirect("/tasks/director/create/")
+    if not is_staff(request.POST.get("staff-name")):
+        messages.error(request, "لا يوجد مسؤول بهذا الاسم")
+    if not request.POST.get("task-subject"):
+        messages.error(request, "يرجى كتابة موضوع المهمة")
+    
+    notification: List[dict] = notify_staff_user(request, request.POST.get("task-subject"))
+    notification.emps.add(is_staff(request.POST.get("staff-name")))
+    messages.success(request, "تم توجيه مسؤول الشعبة بنجاح")
+    
+    return HttpResponseRedirect("/tasks/")
+
+
+
+# check if the employee (user) is in the admin (staff) group
+def is_staff(staff_name) -> List[dict]:
+    return User.objects.get(username=staff_name)
+
+
+
+# create a new notification by the superuser to staff user
+def notify_staff_user(request, message):
+    return Notification.objects.create(
+        user=request.user, 
+        message=message
+    )
 
 
 
