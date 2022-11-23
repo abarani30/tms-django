@@ -236,11 +236,15 @@
     {% endif %}
     <!---->
 
-     <!-- Director Modal-->
-     {% if user.is_superuser %}
-     {% include "components/director_modal.html" %}
-     {% endif %}
-     <!---->
+    <!-- Director Modal-->
+    {% if user.is_superuser %}
+      {% include "components/director_modal.html" %}
+    {% endif %}
+    <!---->
+
+    <!-- Change Password Modal-->
+      {% include "components/change_password_modal.html" %}
+    <!---->
 
   </main>
   <!---->

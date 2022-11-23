@@ -1,8 +1,7 @@
+from typing import List
 from django.shortcuts import render
-from django.views import View
 from django.contrib.auth.models import User, Group
 from myapp.models import Task
-from django.template.response import SimpleTemplateResponse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
@@ -48,6 +47,26 @@ def default_context():
   return {
     "employees": "[]",
   }
+
+
+
+# change the user password
+@require_http_methods(['POST'])
+def change_password(request):
+  if request.POST.get("password"):
+    user: List[dict] = User.objects.get(username__exact=request.user.username)
+    user.set_password(request.POST.get("password"))
+    user.save()
+    print("Password has been changed successfully")
+  return HttpResponseRedirect("/")
+
+
+
+# get the user profile data
+@require_http_methods(['GET'])
+def profile(request, username):
+  if username:
+    return render(request, "profile.html", context={"unreadable": 0})
 
 
 

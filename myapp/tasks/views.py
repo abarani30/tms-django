@@ -333,7 +333,7 @@ def create_task_to_staff(request):
 
 # check if the employee (user) is in the admin (staff) group
 def is_staff(staff_name) -> List[dict]:
-    return User.objects.get(username=staff_name)
+    return User.objects.get(username__exact=staff_name)
 
 
 

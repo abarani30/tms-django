@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+{% load static %}
+
+<head>
+  {% include "base/head.html" %}
+  <title>الملف الشخصي</title>
+</head>
+
+<body>
+  
+  <!--Navbar-->
+  {% include "components/navbar.html" %}
+  <!---->
+
+  <!--Profile Page-->
+  <main class="px-2" style="margin-top: 80px !important">
+
+    <div class="container-fluid">
+      <div class="row px-1">
+        <div class="col-md-12">
+          <u class="fw-bold">المعلومات الشخصية:</u>
+          <ul class="px-4 statistics mt-2">
+            <li class="pt-1"> اسم الموظف: <b>{{user.username}}</b></li>
+            <li class="pt-1"> البريد الالكتروني: <b>{{user.email}}</b></li>
+            <li class="pt-1">  الشعبة: <b>{{user.profile.division}}</b></li>
+            {% if user.is_staff %}
+            <li class="pt-1">نوع الحساب: <b>ادمن</b></li>
+            {% else %}
+            <li class="pt-1">نوع الحساب: <b>مستخدم</b></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password Modal-->
+    {% include "components/change_password_modal.html" %}
+    <!---->
+
+  </main>
+  <!---->
+
+  {% include "base/script.html" %}
+
+</body>
+
+</html>

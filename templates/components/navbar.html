@@ -45,8 +45,8 @@
               اهلاً, <b style="color: black">{{user.username}}</b>
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#profile">الملف الشخصي</a></li>
-              <li><a class="dropdown-item" href="#settings">تغيير كلمة المرور</a></li>
+              <li><a class="dropdown-item" href="/profile/{{user.username}}">الملف الشخصي</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" href="#change-password-modal">تغيير كلمة المرور</a></li>
               <li><a class="dropdown-item" href="/logout/">تسجيل الخروج</a></li>
             </ul>
           </li>
