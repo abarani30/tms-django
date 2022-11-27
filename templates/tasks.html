@@ -161,9 +161,11 @@
                 <td><input type="checkbox" onchange="editTask(`{{task.id}}`)"></td>
                 {% endif %}
                 <td style="display: none;">
-                  {% if task.status == "غير منجزة"  %}
-                  <a href="/tasks/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
-                  {% endif %}
+                  
+                    {% if task.status == "غير منجزة"  %}
+                      <a href="/tasks/update/{{task.id}}">ﺗﺤﺪﻳﺚ</a>
+                    {% endif %}
+                  
                   {% if task.status == "بأنتظار الموافقة" %}
                   <a href="/tasks/confirm/{{task.id}}" class="me-2">تأكيد</a>
                   {% endif %}

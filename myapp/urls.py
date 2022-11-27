@@ -1,6 +1,9 @@
 from django.urls import path
 from .views import HomePageView
-from .employees.views import get_all_employees, register_user, change_password, profile
+from .employees.views import (
+  get_all_employees, register_user, change_password, 
+  profile, delete_account 
+)
 from .tasks.views import (
   get_all, create_task, receive_task, achieve_task, 
   confirm_task, delete_task, get_all_director_tasks, 
@@ -17,6 +20,7 @@ urlpatterns = [
   path("employees/", login_required(get_all_employees)),
   path("employees/register/", login_required(register_user)),
   path("employees/password/change/", login_required(change_password)),
+  path("employees/delete/<int:id>", login_required(delete_account)),
   path("profile/", auth.logoutUser),
   path("profile/<str:username>", login_required(profile)),
   path("tasks/", login_required(get_all)),

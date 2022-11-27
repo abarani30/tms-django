@@ -67,12 +67,13 @@
           </thead>
           <tbody>
             {% for employee in employees %}
+              {% if employee.is_active %}
               <tr>
                 <td style="display: none;">1</td>
                 <td>{{employee.username}}</td>
                 <td>{{employee.email}}</td>
                 <td>
-                  {{employee.profile.division}}
+                  {{employee.groups.all.0}}
                 </td>
                 <td>
                   {% if user.is_staff %}
@@ -85,15 +86,18 @@
                     {{employee.profile.account}}
                   {% endif %}
                 </td>
+                {% if employee.is_active %}
                 <td>مفعل</td>
+                {% endif %}
                 {% if user.is_staff and not user.is_superuser %}
                 <td><input type="checkbox" onchange="editUser(`{{employee.username}}`)"></td>
                 <td style="display: none;">
                   <a href="#" id="update-link" class="me-2" onclick="updateUser(`{{employee.username}}`)">تحديث</a>
-                  <a href="#" class="me-2">حذف</a>
+                  <a href="/employees/delete/{{employee.id}}" class="me-2">حذف</a>
                 </td>
                 {% endif %}
               </tr>
+              {% endif %}
             {% endfor %}
           </tbody>
         </table>

@@ -19,7 +19,7 @@
     <div class="row px-1">
 
       {% if not user.is_staff and not user.is_superuser %}
-        {% if all_notifications.count != 0 %}
+        {% if all_notifications != 0 %}
           <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{all_notifications|length}}</b></div>
           <ul class="list-group list-group gap-2">
             {% for notification in all_notifications %}
@@ -33,7 +33,7 @@
                 <span class="text-muted" style="font-size: 15.5px !important">{{notification.created_at | timesince}}</span>
               </div>
               {% if not notification.received %}
-              <button class="btn btn-primary btn-sm">تمييز كمقروء</button>
+              <span class="mt-2">غير مقروء</span>
               {% else %}
               <span class="mt-2">مقروء</span>
               {% endif %}
@@ -46,7 +46,7 @@
       {% endif %}
       
       {% if user.is_staff and not user.is_superuser %}
-        {% if superuser_notifications.count != 0 %}
+        {% if superuser_notifications != 0 %}
           <div class="col-md-12 px-3 mt-1 mb-3">كل الاشعارات: <b>{{superuser_notifications|length}}</b></div>
           <ul class="list-group list-group gap-2">
             {% for notification in superuser_notifications %}

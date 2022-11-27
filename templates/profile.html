@@ -24,7 +24,7 @@
           <ul class="px-4 statistics mt-2">
             <li class="pt-1"> اسم الموظف: <b>{{user.username}}</b></li>
             <li class="pt-1"> البريد الالكتروني: <b>{{user.email}}</b></li>
-            <li class="pt-1">  الشعبة: <b>{{user.profile.division}}</b></li>
+            <li class="pt-1">  الشعبة: <b>{{user.groups.all.0}}</b></li>
             {% if user.is_staff %}
             <li class="pt-1">نوع الحساب: <b>ادمن</b></li>
             {% else %}

@@ -2,21 +2,24 @@ from typing import List, Dict
 from django.shortcuts import HttpResponseRedirect, render
 from myapp.models import Notification, Task
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib import messages
-
 
 
 # get all the notifications for employees
 def get_all_notifications(request):
-  if task_instance():
-    return render(request, "notifications.html", context=get_context(request, task_instance()))
-  return HttpResponseRedirect("/notifications/")
+  if task_instance() and notification_instance():
+    return render(request, "notifications.html", context=get_context(request, task_instance(), notification_instance()))
+  return render(request, "notifications.html", context=get_context(request, 0, 0))
 
 
 
 # get the task instance
 def task_instance():
   return Task.objects.prefetch_related("employees")
+
+
+# get the notification instance
+def notification_instance():
+  return Notification.objects.prefetch_related("emps")
 
 
 
@@ -63,9 +66,17 @@ def update_received_field(notification: Dict):
 
 
 # get the context dictionary
-def get_context(request, task):
+def get_context(request, task, notification):
+  if task != 0:
+    return { 
+      "unreadable": task[0].unread_employee_tasks(request),
+      "unreadable_staff": notification[0].unread_staff_notifications(request),
+      "all_notifications": task[0].get_employee_tasks(request),
+      "superuser_notifications": get_all_superuser_notifications(request),
+    }
   return { 
-    "unreadable": task[0].unread_employee_tasks(request),
-    "all_notifications": task[0].get_employee_tasks(request),
-    "superuser_notifications": get_all_superuser_notifications(request),
+    "unreadable": 0,
+    "unreadable_staff": 0,
+    "all_notifications": 0,
+    "superuser_notifications": 0,
   }

@@ -22,63 +22,13 @@
         <div class="col-md-12">
           <u class="fw-bold">الاحصائيات:</u>
           <ul class="px-4 statistics">
-            <li class="pt-1">عدد المهام: <b>{{task.total_staff_tasks}}</b></li>
-            <li class="pt-1">مهام منجزة: <b>{{task.total_achieved_tasks}}</b></li>
-            <li class="pt-1">مهام غير منجزة: <b>{{task.total_unachieved_tasks}}</b></li>
-            <li class="pt-1">عدد الموظفين: <b>{{profile.get_all_employees}}</b></li>
+            <li class="pt-1">عدد المهام: <b>{{total_tasks}}</b></li>
+            <li class="pt-1">مهام منجزة: <b>{{total_achieved}}</b></li>
+            <li class="pt-1">مهام غير منجزة: <b>{{total_unachieved}}</b></li>
+            <li class="pt-1">عدد الموظفين الكلي:  <b>{{profile.get_all_employees}}</b></li>
           </ul>
         </div>
       </div>
-    </div>
-
-    <div class="container-fluid mt-3">
-      
-      <div class="row px-1">
-        <u class="fw-bold">مخطط المهام:</u>
-      </div>
-
-      <div class="row mt-3">
-        {% if user.is_superuser %}
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header fw-bold">شعبة الانظمة</div>
-            <div class="card-body">
-              <canvas class="chart"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header fw-bold">الشعبة الفنية</div>
-            <div class="card-body">
-              <canvas class="chart"></canvas>
-            </div>
-          </div>
-        </div>
-        {% else %}
-          {% if user.profile.division == "الانظمة" %}
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-header fw-bold">شعبة الانظمة</div>
-              <div class="card-body">
-                <canvas class="chart"></canvas>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-          {% if user.profile.division == "الفنية" %}
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-header fw-bold">الشعبة الفنية</div>
-              <div class="card-body">
-                <canvas class="chart"></canvas>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-        {% endif %}
-      </div>
-
     </div>
 
     {% if user.is_superuser %}
@@ -86,6 +36,7 @@
       <div class="row px-1">
         <div class="col-md-12">
           <u class="fw-bold">احدث المهام:</u>
+          {% if task != 0 %}
           <ul class="px-4 pt-2 statistics">
             {% for task in task.get_last_three %}
               <li class="pt-1">
@@ -105,6 +56,9 @@
               </li>
             {% endfor %}
           </ul>
+          {% else %}
+          <p>لا توجد مهام لحد الان</p>
+          {% endif %}
         </div>
       </div>
     </div>

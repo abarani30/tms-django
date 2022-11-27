@@ -29,11 +29,19 @@
           <li class="nav-item">
             <a class="nav-link d-flex justify-content-start align-items-center gap-1" href="/notifications/">
               الاشعارات
+             {% if user.is_staff %}
+              {% if unreadable_staff != 0 %}
+              <span class="badge bg-danger">
+                {{unreadable_staff}}
+              </span>
+              {% endif %}
+             {% else %}
               {% if unreadable != 0 %}
               <span class="badge bg-danger">
                 {{unreadable}}
               </span>
               {% endif %}
+             {% endif %}
             </a>
           </li>
           {% endif %}

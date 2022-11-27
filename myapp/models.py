@@ -114,6 +114,12 @@ class Notification(models.Model):
     def __str__(self):
         return self.message 
 
+    # count the total unreadable notifications for the current staff user 
+    def unread_staff_notifications(self, request):
+        return sum(
+            not notification.received and request.user in notification.emps.all()
+            for notification in Notification.objects.all())
+
 
     
 

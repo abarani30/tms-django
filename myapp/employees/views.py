@@ -1,7 +1,7 @@
 from typing import List
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
-from myapp.models import Task
+from myapp.models import Notification, Task
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
@@ -11,10 +11,9 @@ from django.views.decorators.http import require_http_methods
 # a view to handle the get request
 @require_http_methods(['GET'])
 def get_all_employees(request) -> HttpResponse:
-  if is_task():
-    return render(request, "employees.html", 
-    context= get_context(request, is_task()))
-  return render(request, "employees.html", context = default_context()) 
+  if is_task() or is_notification():
+    return render(request, "employees.html", context = get_context(request, is_task(), is_notification()))
+  return render(request, "employees.html", context = get_context(request, 0, 0)) 
 
 
 
@@ -34,18 +33,17 @@ def register_user(request) -> HttpResponseRedirect:
 
 
 # get the context dictionary
-def get_context(request, task):
+def get_context(request, task, notification):
+  if task and notification: 
+    return {
+      "employees": get_all(request),
+      "unreadable": task[0].unread_employee_tasks(request),
+      "unreadable_staff": notification[0].unread_staff_notifications(request),
+    }
   return {
     "employees": get_all(request),
-    "unreadable": task[0].unread_employee_tasks(request)
-  }
-
-
-
-# in case when there is no employees in the this division
-def default_context():
-  return {
-    "employees": "[]",
+    "unreadable": 0,
+    "unreadable_staff": 0
   }
 
 
@@ -75,6 +73,11 @@ def is_task():
   return Task.objects.prefetch_related("employees")
 
 
+# check if there is any tasks
+def is_notification():
+  return Notification.objects.prefetch_related("emps")
+
+
 
 # get all the active employees in the same group
 def get_all(request):
@@ -88,7 +91,7 @@ def get_all(request):
 def validate_data(request) -> bool:
   # check if there is user associated with the username
   return bool(
-    not is_username(request) and 
+    not is_username(request.POST.get("username")) and 
     request.POST.get("username") and 
     password_length(request) and 
     is_outlook_mail(request) and 
@@ -154,3 +157,15 @@ def update_profile(request, user) -> bool:
   user.profile.account  = request.POST.get("role")
   user.save()
   return True
+
+
+
+# deactivate (delete) an account
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+def delete_account(request, id) -> HttpResponseRedirect:
+  user: List[dict] = User.objects.get(pk=id)
+  if not id or not user: messages.error(request, "لا يوجد هكذا موظف")
+  user.is_active = False
+  user.save()
+  messages.success(request, "تم حذف الموظف بنجاح")
+  return HttpResponseRedirect("/employees/")

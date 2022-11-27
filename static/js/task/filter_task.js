@@ -1,5 +1,4 @@
 function filterTasks() {
-  console.log("ali")
   var status = document.getElementById("task-status").value;
   var employee = document.getElementById("employees").value;
   
@@ -10,7 +9,7 @@ function filterTasks() {
 
   for (i = 0; i < tr.length; i++) {
     employeesColumn   = tr[i].getElementsByTagName("td")[2];
-    statusColumn      = tr[i].getElementsByTagName("td")[7];
+    statusColumn      = tr[i].getElementsByTagName("td")[6];
 
     if (statusColumn && employeesColumn) {
       statusValue = statusColumn.innerText;

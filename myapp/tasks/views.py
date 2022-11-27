@@ -35,7 +35,8 @@ def default_context(request) -> Dict:
     return {
         "employees": get_all_users(request),
         "tasks": "[]",
-        "unreadable": 0
+        "unreadable": 0,
+        "unreadable_staff": 0,
     }
 
 
